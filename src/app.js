@@ -74,10 +74,11 @@ app.use('/api/admin', adminRoutes);
 
 
 // React static serve 
-app.use(express.static(path.join(__dirname, "client/dist")));
+const rootDir = process.cwd();
+app.use(express.static(path.join(rootDir, "client/dist")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/dist/index.html"));
+  res.sendFile(path.join(rootDir, "client/dist/index.html"));
 });
 
 // 404 handler
