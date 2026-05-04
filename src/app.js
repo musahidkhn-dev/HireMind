@@ -27,7 +27,38 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-app.use(helmet({ crossOriginResourcePolicy: false })); 
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+
+        scriptSrc: [
+          "'self'",
+          "https://accounts.google.com"
+        ],
+
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://res.cloudinary.com"
+        ],
+
+        connectSrc: [
+          "'self'",
+          "https://accounts.google.com",
+          "https://res.cloudinary.com"
+        ],
+
+        frameSrc: [
+          "'self'",
+          "https://accounts.google.com"
+        ]
+      }
+    }
+  })
+);
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',

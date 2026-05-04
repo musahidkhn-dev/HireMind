@@ -1,5 +1,4 @@
 .env
 node_modules/
-uploads/
 client/nod_modules/
 client/build
