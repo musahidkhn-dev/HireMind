@@ -1,0 +1,138 @@
+/* REDESIGN: Added Playfair Display serif font for headings */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .glass-dark {
+    @apply bg-gray-900/50 backdrop-blur-md border border-gray-700/50;
+  }
+
+  /* REDESIGN: Golden gradient replacing indigo */
+  .gradient-primary {
+    background: linear-gradient(135deg, #F5A623, #E8920A);
+  }
+
+  /* REDESIGN: Golden gradient text replacing indigo */
+  .gradient-text {
+    background: linear-gradient(135deg, #F5A623, #E8920A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* REDESIGN: Clean white card with light border */
+  .card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  /* REDESIGN: Golden featured card */
+  .card-golden {
+    background: #F5A623;
+    border-radius: 16px;
+    border: none;
+  }
+
+  .section-padding {
+    @apply py-20 px-4 sm:px-6 lg:px-8;
+  }
+
+  /* REDESIGN: Wavy golden SVG line decoration */
+  .wavy-decoration {
+    /* Applied via inline SVG in components */
+  }
+
+  /* REDESIGN: Dot grid pattern for subtle backgrounds */
+  .dot-pattern {
+    background-image: radial-gradient(#CCCCCC 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+
+  /* REDESIGN: Diagonal teal stripe pattern */
+  .stripe-pattern {
+    background: repeating-linear-gradient(
+      45deg,
+      #4ECDC4,
+      #4ECDC4 2px,
+      transparent 2px,
+      transparent 10px
+    );
+  }
+}
+
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+body {
+  @apply bg-[#FDFCFB] text-text-primary dark:bg-[#0F0F0F] dark:text-white antialiased;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  min-height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* Image Safeguards */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-wrapper {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* REDESIGN: Dark mode card override */
+.dark .card {
+  background: #1A1A1A;
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dark .bg-white {
+  background-color: #0F0F0F !important;
+}
+
+.dark .text-text-primary {
+  color: #FFFFFF !important;
+}
+
+.dark .text-text-secondary {
+  color: #9CA3AF !important;
+}
+
+.dark .border-border {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #1A1A1A !important;
+}
+
