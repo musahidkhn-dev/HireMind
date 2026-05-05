@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import createNotification from '../utils/createNotification.js';
 import Application from "../models/applicationModel.js";
 import Job from "../models/jobModel.js";
@@ -38,14 +39,18 @@ export const applyJob = async (req, res) => {
         }
 
 
+        console.log("DEBUG: applyJob - jobId:", jobId);
+        console.log("DEBUG: applyJob - userId:", req.user?._id);
+
         // Check duplicate application
         const existing = await Application.findOne({
-            job: jobId,
-            candidate: req.user._id,
+            job: new mongoose.Types.ObjectId(jobId),
+            candidate: new mongoose.Types.ObjectId(req.user._id),
         });
 
         if(existing) {
-            return res.status(409).json({ message: 'You have already applied to this job' });
+            console.log("DEBUG: Duplicate application found in database");
+            return res.status(400).json({ success: false, message: 'You have already applied to this job' });
         }
 
         //Build resume URL - local path for now
@@ -69,67 +74,68 @@ export const applyJob = async (req, res) => {
             ],
         });
 
-        // Log Activity
-        await Activity.create({
-            user: req.user._id,
-            company: job.company._id,
-            type: 'application',
-            action: 'applied for',
-            target: job.title,
-            metadata: {
-                applicationId: application._id,
-                jobId: job._id,
-                candidateId: req.user._id,
-            }
-        });
-
-        //Notify company about new application
-        await createNotification({
-            recipient: job.createdBy,
-            type: 'application_received',
-            title: 'New Application Received',
-            message: `${req.user.name} applied for ${job.title}`,
-            data: {
-                jobId: job._Id,
-                applicationId: application._id,
-                companyId: job.company
-
-            },
-        });
-
-        try{
-        // Increment job application count
-         await Job.findByIdAndUpdate(jobId, { $inc: { applicationCount: 1} });
-        } catch (err) {
-            console.error('Failed to update application count: ', err);
-        }
-        // Send confirmation email to candidate
-        try {
-          await sendEmail({
-            to: req.user.email,
-            subject: `Application submitted - ${job.title} at ${job.company.name}`,
-            html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2>Application Received!</h2>
-                <p>Hi ${req.user.name},</p>
-                <p>Your application for <strong>${job.title}</strong> at <strong>${job.company.name}</strong> has been successfully submitted.</p>
-                <p>We will keep you updated on the process of your application.</p>
-                <p>Good luck!</p>
-                </div>
-                `,
-        });
-        } catch(emailErr){
-            console.error('Email send failed:', emailErr.message);
-            //Don't block response if email fails
-        };
-
-        return res.status(201).json({
+        // Send response immediately
+        res.status(201).json({
+            success: true,
             message: 'Application submitted successfully',
             application,
         });
+
+        // Run non-critical tasks in background
+        (async () => {
+            try {
+                Activity.create({
+                    user: req.user._id,
+                    company: job.company._id,
+                    type: 'application',
+                    action: 'applied for',
+                    target: job.title,
+                    metadata: {
+                        applicationId: application._id,
+                        jobId: job._id,
+                        candidateId: req.user._id,
+                    }
+                }).catch(err => console.error('Activity log failed', err));
+
+                createNotification({
+                    recipient: job.createdBy,
+                    type: 'application_received',
+                    title: 'New Application Received',
+                    message: `${req.user.name} applied for ${job.title}`,
+                    data: {
+                        jobId: job._id,
+                        applicationId: application._id,
+                        companyId: job.company
+                    },
+                }).catch(err => console.error('Notification failed', err));
+
+                Job.findByIdAndUpdate(jobId, { $inc: { applicationCount: 1} })
+                    .catch(err => console.error('Failed to update application count: ', err));
+
+                sendEmail({
+                    to: req.user.email,
+                    subject: `Application submitted - ${job.title} at ${job.company.name}`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <h2>Application Received!</h2>
+                        <p>Hi ${req.user.name},</p>
+                        <p>Your application for <strong>${job.title}</strong> at <strong>${job.company.name}</strong> has been successfully submitted.</p>
+                        <p>We will keep you updated on the process of your application.</p>
+                        <p>Good luck!</p>
+                        </div>
+                        `,
+                }).catch(emailErr => console.error('Email send failed:', emailErr.message));
+            } catch (bgError) {
+                console.error('Background task error in applyJob:', bgError.message);
+            }
+        })();
     } catch (error) {
+        // Handle MongoDB duplicate key error (race condition / double-click)
+        if (error.code === 11000) {
+            return res.status(400).json({ success: false, message: 'You have already applied to this job' });
+        }
         console.error('applyToJob Error', error.message);
-        return res.status(500).json({ message: 'Server Error' });
+        return res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
 
@@ -290,8 +296,7 @@ export const updateApplicationStage = async (req, res) => {
         }
 
         const application = await Application.findById(req.params.id)
-            .populate('job')
-            .populate('candidate', 'name email');
+            .populate('job'); // Only populate job initially for auth check
 
         if(!application) {
             return res.status(404).json({ message: 'Application not found!' });
@@ -338,75 +343,78 @@ export const updateApplicationStage = async (req, res) => {
             });
         }
 
-        //Auto update status for terminal stages
-        if (trimmedStage === 'Hired') {
-            application.status = 'hired';
-            
-            // Convert candidate to Employee of this company
-            // Use application.company which is set during applyToJob
-            const updatedUser = await User.findByIdAndUpdate(application.candidate._id, {
-                role: 'employee',
-                company: application.company,
-            }, { new: true });
-
-            console.log(`[HIRE_LOG] Candidate ${application.candidate._id} converted to employee.`);
-            console.log(`[HIRE_LOG] New User Role: ${updatedUser.role}, Company: ${updatedUser.company}`);
-        }
-
-        // Log Activity
-        await Activity.create({
-            user: req.user._id,
-            company: application.company,
-            type: 'application',
-            action: `moved ${application.candidate.name} to`,
-            target: trimmedStage,
-            metadata: {
-                applicationId: application._id,
-                jobId: application.job._id,
-                candidateId: application.candidate._id,
-            }
-        });
-
-        if (trimmedStage === 'Rejected') application.status = 'rejected';
-        
         await application.save();
 
-
-        await createNotification({
-            recipient: application.candidate._id,
-            type: 'application_status',
-            title: 'Application Status Updated',
-            message: `Your Application for ${application.job.title} moved to ${stage}`,
-            data: {
-                jobId: application.job._id,
-                applicationId: application._id,
-            },
-        });
-
-
-        //Notify candidate by email
-        try {
-            await sendEmail({
-                to: application.candidate.email,
-                subject: `Application update - ${application.job.title}`,
-                html: `
-                   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2>Application Status Update</h2>
-                    <p>Hi ${application.candidate.name},</p>
-                    <p>Your application for <strong>${application.job.title}</strong> has been moved from <strong>${previousStage}</strong> to <strong> ${stage}</strong>.</p>
-                    ${note ? `<p>Note from recruiter: <em>${note}</em></p>` : ''}
-                    <p>Log in to HireMind to view your full application status.</p>
-                   </div>
-                `,
-            });
-        } catch (emailErr) {
-            console.error('Candidate notification email failed:', emailErr.message);
-        }
-
-        return res.status(200).json({
+        // Send response immediately
+        res.status(200).json({
+            success: true,
             message: `Application moved to ${stage}`,
             application,
         });
+
+        // Run non-critical tasks in background
+        (async () => {
+            try {
+                // If "Hired", convert candidate to Employee (moved to background)
+                if (trimmedStage === 'Hired') {
+                    await User.findByIdAndUpdate(application.candidate, {
+                        role: 'employee',
+                        company: application.company,
+                    });
+                    console.log(`[HIRE_LOG] Candidate ${application.candidate} converted to employee in background.`);
+                }
+
+                // Populate extra details needed for notifications
+                const fullApp = await Application.findById(application._id)
+                    .populate('candidate', 'name email')
+                    .populate({
+                        path: 'job',
+                        populate: { path: 'company', select: 'name' }
+                    });
+
+                if (!fullApp) return;
+
+                Activity.create({
+                    user: req.user._id,
+                    company: fullApp.company,
+                    type: 'application',
+                    action: `moved ${fullApp.candidate.name} to`,
+                    target: trimmedStage,
+                    metadata: {
+                        applicationId: fullApp._id,
+                        jobId: fullApp.job._id,
+                        candidateId: fullApp.candidate._id,
+                    }
+                }).catch(err => console.error('Activity failed', err));
+
+                createNotification({
+                    recipient: fullApp.candidate._id,
+                    type: 'application_status',
+                    title: 'Application Status Updated',
+                    message: `Your Application for ${fullApp.job.title} moved to ${stage}`,
+                    data: {
+                        jobId: fullApp.job._id,
+                        applicationId: fullApp._id,
+                    },
+                }).catch(err => console.error('Notification failed', err));
+
+                sendEmail({
+                    to: fullApp.candidate.email,
+                    subject: `Application update - ${fullApp.job.title}`,
+                    html: `
+                       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <h2>Application Status Update</h2>
+                        <p>Hi ${fullApp.candidate.name},</p>
+                        <p>Your application for <strong>${fullApp.job.title}</strong> has been moved from <strong>${previousStage}</strong> to <strong> ${stage}</strong>.</p>
+                        ${note ? `<p>Note from recruiter: <em>${note}</em></p>` : ''}
+                        <p>Log in to HireMind to view your full application status.</p>
+                       </div>
+                    `,
+                }).catch(emailErr => console.error('Candidate notification email failed:', emailErr.message));
+            } catch (bgError) {
+                console.error('Background task error in updateApplicationStage:', bgError.message);
+            }
+        })();
 
     } catch (error) {
         console.error('updateApplicationStage Error', error.message);
@@ -438,12 +446,12 @@ export const withdrawApplication = async (req, res) => {
         application.currentStage = 'Withdrawn';
         await application.save();
 
-        // Decrement job application count
-        await Job.findByIdAndUpdate(application.job, {
-            $inc: { applicationCount: -1 },
-        });
+        res.status(200).json({ success: true, message: 'Application withdrawn successfully' });
 
-        return res.status(200).json({ message: 'Application withdrawn successfully' });
+        // Decrement job application count (in background)
+        Job.findByIdAndUpdate(application.job, {
+            $inc: { applicationCount: -1 },
+        }).catch(err => console.error('Failed to decrement application count:', err));
     } catch (error) {
         console.error('withdrawApplication Error:  ', error.message);
         return res.status(500).json({ message: 'Server Error' });

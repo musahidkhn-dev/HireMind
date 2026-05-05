@@ -31,6 +31,7 @@ export const useApplyToJob = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ jobId, formData }) => applicationApi.applyToJob(jobId, formData),
+    retry: 1,
     onSuccess: () => {
       queryClient.invalidateQueries(['applications']);
       queryClient.invalidateQueries(['dashboard']);
@@ -38,7 +39,10 @@ export const useApplyToJob = () => {
       toast.success('Applied successfully!');
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to apply');
+      const msg = error.code === 'ECONNABORTED'
+        ? 'Request timed out. Please try again.'
+        : error.response?.data?.message || 'Failed to apply';
+      toast.error(msg);
     },
   });
 };
@@ -47,6 +51,7 @@ export const useUpdateStage = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }) => applicationApi.updateStage(id, data),
+    retry: 1,
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries(['applications']);
       queryClient.invalidateQueries(['application', id]);
@@ -55,7 +60,10 @@ export const useUpdateStage = () => {
       toast.success('Stage updated');
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to update stage');
+      const msg = error.code === 'ECONNABORTED'
+        ? 'Request timed out. Please try again.'
+        : error.response?.data?.message || 'Failed to update stage';
+      toast.error(msg);
     },
   });
 };
@@ -64,12 +72,16 @@ export const useWithdrawApplication = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id) => applicationApi.withdrawApplication(id),
+    retry: 1,
     onSuccess: () => {
       queryClient.invalidateQueries(['applications']);
       toast.success('Application withdrawn');
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to withdraw application');
+      const msg = error.code === 'ECONNABORTED'
+        ? 'Request timed out. Please try again.'
+        : error.response?.data?.message || 'Failed to withdraw application';
+      toast.error(msg);
     },
   });
 };
@@ -78,12 +90,16 @@ export const useAddNote = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, text }) => applicationApi.addNote(id, text),
+    retry: 1,
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries(['application', id]);
       toast.success('Note added');
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to add note');
+      const msg = error.code === 'ECONNABORTED'
+        ? 'Request timed out. Please try again.'
+        : error.response?.data?.message || 'Failed to add note';
+      toast.error(msg);
     },
   });
 };
