@@ -36,32 +36,35 @@ app.use(
 
         scriptSrc: [
           "'self'",
-          "https://accounts.google.com"
+          "https://accounts.google.com",
+          "https://github.com"
         ],
 
         imgSrc: [
           "'self'",
           "data:",
-          "https://res.cloudinary.com"
+          "https://res.cloudinary.com",
+          "https://avatars.githubusercontent.com"
         ],
 
         connectSrc: [
           "'self'",
           "https://accounts.google.com",
-          "https://res.cloudinary.com"
+          "https://res.cloudinary.com",
+          "https://github.com"
         ],
 
         frameSrc: [
           "'self'",
-          "https://accounts.google.com"
+          "https://accounts.google.com",
+          "https://github.com"
         ]
       }
     }
   })
 );
 const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
+  'https://hiremind-kyyr.onrender.com',
   process.env.FRONTEND_URL
 ].filter(Boolean);
 

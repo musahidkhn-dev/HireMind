@@ -42,7 +42,7 @@ router.post('/logout', protect, logOut);
 
 //-------- Google auth ----------------------
 router.post('/google', googleAuth); // Frontend-based flow (google-auth-library)
-router.get('/google/passport', (req, res, next) => {
+router.get('/google', (req, res, next) => {
     console.log("Google login triggered");
     next();
 }, passport.authenticate('google', { 
@@ -72,6 +72,10 @@ router.get(
 
 router.get(
     '/github/callback',
+    (req, res, next) => {
+        console.log("GitHub callback:", process.env.BASE_URL + "/api/auth/github/callback");
+        next();
+    },
     passport.authenticate('github',{
         failureRedirect: `${process.env.FRONTEND_URL}/login?error=GitHub auth failed`,
         session: false,

@@ -45,7 +45,7 @@ instance.interceptors.response.use(
 
         // Use a clean axios instance for the refresh call to avoid interceptor loops
         const res = await axios.post(
-          `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
+          "/api/auth/refresh-token",
           { refreshToken }
         );
 
