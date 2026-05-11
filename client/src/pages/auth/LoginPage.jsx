@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Brain, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { loginUser } from '../../store/authSlice';
-import Button from '../../components/common/Button';
+import GlowButton from '../../components/animations/GlowButton';
 import Input from '../../components/common/Input';
+import PageTransition from '../../components/animations/PageTransition';
 import { toast } from 'react-hot-toast';
 
 const loginSchema = z.object({
@@ -43,7 +44,7 @@ const LoginPage = () => {
       clearErrors('root.serverError');
       await dispatch(loginUser(data)).unwrap();
     } catch (err) {
-      console.log('Login UI Error:', err);
+
       const errorMessage = err || 'Login failed';
       setError('root.serverError', { message: errorMessage });
       toast.error(errorMessage);
@@ -51,8 +52,7 @@ const LoginPage = () => {
   };
 
   return (
-    // ✅ FIXED: Using Grid Layout for Auth Pages
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-[#0F0F0F]">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-transparent">
       
       {/* LEFT: FORM SECTION */}
       <div className="flex items-center justify-center px-6 md:px-12 lg:px-20 py-10 z-10">
@@ -70,7 +70,7 @@ const LoginPage = () => {
               animate={{ opacity: 1, x: 0 }}
               className="text-4xl font-serif text-text-primary dark:text-white mb-3"
             >
-              Welcome back to <span className="text-primary italic">HireMind</span>
+              Welcome back to <span className="gradient-neon-text font-bold italic">HireMind</span>
             </motion.h2>
             <p className="text-text-secondary dark:text-gray-400 font-medium">
               Access your dashboard and manage your hiring journey seamlessly.
@@ -101,25 +101,27 @@ const LoginPage = () => {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     {...register('password')}
-                    className={`w-full rounded-2xl border border-border dark:border-white/5 bg-white dark:bg-white/5 pl-4 pr-12 py-3.5 text-sm text-text-primary dark:text-white outline-none focus:border-primary transition-all ${errors.password ? 'border-red-500' : ''}`}
+                    className={`w-full rounded-2xl border border-border dark:border-slate-700 bg-white dark:bg-white/5 pl-4 pr-12 py-3.5 text-sm text-text-primary dark:text-white outline-none focus:border-primary transition-all ${errors.password ? 'border-red-500' : ''}`}
                  />
                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary">
                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                  </button>
               </div>
             </div>
-            <Button type="submit" size="xl" className="w-full rounded-2xl" loading={loading}>Sign In</Button>
+            <GlowButton type="submit" variant="glow" className="w-full rounded-2xl py-3.5" disabled={loading}>
+              {loading ? 'Authenticating...' : 'Sign In'}
+            </GlowButton>
           </form>
 
           <div className="mt-10 relative">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border dark:border-white/5"></div></div>
-            <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest"><span className="bg-white dark:bg-[#0F0F0F] px-4 text-text-secondary">Or continue with</span></div>
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border dark:border-slate-700"></div></div>
+            <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest"><span className="bg-white dark:bg-slate-900 px-4 text-text-secondary">Or continue with</span></div>
           </div>
 
           <div className="mt-8 grid grid-cols-1 gap-4">
             <button 
               onClick={() => window.location.href = "/api/auth/google"}
-              className="flex items-center justify-center gap-3 py-3.5 rounded-2xl border border-border dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-all font-bold text-sm dark:text-white"
+              className="flex items-center justify-center gap-3 py-3.5 rounded-2xl border border-border dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-all font-bold text-sm dark:text-white"
             >
                <svg size={20} viewBox="0 0 24 24" className="w-5 h-5"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                Continue with Google
@@ -133,7 +135,7 @@ const LoginPage = () => {
       </div>
 
       {/* RIGHT: IMAGE SECTION (Premium Overhaul) */}
-      <div className="hidden lg:flex items-center justify-center bg-gray-50 dark:bg-[#0A0A0A] p-12 overflow-hidden relative transition-colors">
+      <div className="hidden lg:flex items-center justify-center bg-gray-50 dark:bg-slate-900 p-12 overflow-hidden relative transition-colors">
         {/* Background Decorative Elements */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
         <div className="absolute top-1/4 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px]" />
@@ -146,7 +148,7 @@ const LoginPage = () => {
           className="relative z-10 w-full max-w-lg"
         >
           {/* Main Card with Gradient */}
-          <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-[#1A1A1A] dark:to-[#111111] rounded-[3rem] p-10 shadow-2xl border border-border dark:border-white/5 overflow-hidden group">
+          <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-[#1A1A1A] dark:to-[#111111] rounded-[3rem] p-10 shadow-2xl border border-border dark:border-slate-700 overflow-hidden group">
              {/* Floating Micro-elements */}
              <motion.div 
                animate={{ y: [0, -10, 0] }}
@@ -160,12 +162,12 @@ const LoginPage = () => {
              />
 
              <img 
-               src="/images/auth-3d.png" 
-               alt="3D Character" 
-               onError={(e) => { e.target.src = "https://via.placeholder.com/600x600?text=3D+Character"; console.log("Login Image failed to load"); }}
-               onLoad={() => console.log("Login Image loaded")}
-               className="w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)] group-hover:scale-105 transition-transform duration-700 relative z-10" 
+               src="/images/auth-visual-premium.png" 
+               alt="Cinematic Hiring Team" 
+               className="w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)] group-hover:scale-105 transition-transform duration-700 relative z-10 rounded-2xl" 
+               loading="eager"
              />
+             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-20 rounded-2xl pointer-events-none mix-blend-overlay" />
           </div>
 
           <div className="mt-12 text-center">

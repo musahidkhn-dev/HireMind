@@ -83,52 +83,41 @@ const Sidebar = ({ collapsed, onToggle, isMobileOpen, onCloseMobile }) => {
   return (
     <>
       {/* Mobile Overlay */}
-      <AnimatePresence>
-        {isMobileOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onCloseMobile}
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
-          />
-        )}
-      </AnimatePresence>
+      {isMobileOpen && (
+        <div
+          onClick={onCloseMobile}
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
+        />
+      )}
 
       {/* REDESIGN: White bg sidebar with golden active link */}
-      <motion.aside
-        initial={false}
-        animate={{ 
-          width: collapsed ? 100 : 280,
-          x: (typeof window !== 'undefined' && window.innerWidth < 1024 && !isMobileOpen) ? -280 : 0
-        }}
-        className={`fixed left-0 top-0 bottom-0 z-50 bg-white dark:bg-[#0F0F0F] border-r border-border dark:border-white/5 flex flex-col transition-transform lg:transition-none ${
+      <aside
+        className={`fixed left-0 top-0 bottom-0 z-50 bg-white dark:bg-slate-900 border-r border-border dark:border-slate-700 flex flex-col transition-all lg:transition-none ${
           isMobileOpen ? 'translate-x-0 w-[280px]' : ''
-        }`}
+        } ${collapsed && !isMobileOpen ? 'lg:w-[100px]' : 'lg:w-[280px]'}`}
+        style={{
+          transform: (typeof window !== 'undefined' && window.innerWidth < 1024 && !isMobileOpen) ? 'translateX(-280px)' : 'none'
+        }}
       >
-        <Link to="/" className="h-20 flex items-center px-8 gap-3 cursor-pointer group" onClick={handleLinkClick}>
-          <div className="p-2 bg-primary rounded-2xl shrink-0 group-hover:rotate-12 transition-transform shadow-lg shadow-primary/20">
-            <Brain className="text-white" size={24} />
+        <Link to="/" className="h-16 lg:h-20 flex items-center px-6 lg:px-8 gap-3 cursor-pointer group" onClick={handleLinkClick}>
+          <div className="p-1.5 lg:p-2 bg-primary rounded-xl lg:rounded-2xl shrink-0 group-hover:rotate-12 transition-transform shadow-lg shadow-primary/20">
+            <Brain className="text-white" size={20} className="lg:w-6 lg:h-6" />
           </div>
           {(!collapsed || isMobileOpen) && (
-            <motion.span 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-2xl font-serif text-text-primary dark:text-white whitespace-nowrap"
-            >
+            <span className="text-xl lg:text-2xl font-serif text-text-primary dark:text-white whitespace-nowrap">
               Hire<span className="text-primary italic">Mind</span>
-            </motion.span>
+            </span>
           )}
         </Link>
 
-        <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 px-3 lg:px-4 py-6 lg:py-8 space-y-1 lg:space-y-2 overflow-y-auto custom-scrollbar">
           {links.map((link) => (
             <NavLink
               key={link.path}
               to={link.path}
               onClick={handleLinkClick}
               className={({ isActive }) =>
-                `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all group relative overflow-hidden ${
+                `flex items-center gap-3 lg:gap-4 px-3 lg:px-4 py-3 lg:py-3.5 rounded-xl lg:rounded-2xl transition-all group relative overflow-hidden ${
                   isActive 
                     ? 'text-primary' 
                     : 'text-text-secondary dark:text-gray-400 hover:text-text-primary dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
@@ -138,27 +127,16 @@ const Sidebar = ({ collapsed, onToggle, isMobileOpen, onCloseMobile }) => {
               {({ isActive }) => (
                 <>
                   {isActive && (
-                    <motion.div
-                      layoutId="active-nav-bg"
-                      className="absolute inset-0 bg-primary/5 dark:bg-primary/10 rounded-2xl"
-                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                    />
+                    <div className="absolute inset-0 bg-primary/5 dark:bg-primary/10 rounded-xl lg:rounded-2xl" />
                   )}
-                  <link.icon size={20} className={`shrink-0 transition-colors ${isActive ? 'text-primary' : 'text-text-secondary dark:text-gray-400 group-hover:text-text-primary dark:group-hover:text-white'}`} />
+                  <link.icon size={18} className={`shrink-0 transition-colors lg:w-5 lg:h-5 ${isActive ? 'text-primary' : 'text-text-secondary dark:text-gray-400 group-hover:text-text-primary dark:group-hover:text-white'}`} />
                   {(!collapsed || isMobileOpen) && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="font-bold text-sm tracking-tight"
-                    >
+                    <span className="font-bold text-xs lg:text-sm tracking-tight">
                       {link.label}
-                    </motion.span>
+                    </span>
                   )}
                   {isActive && (
-                    <motion.div
-                      layoutId="active-nav-indicator"
-                      className="absolute right-0 w-1 h-6 bg-primary rounded-l-full"
-                    />
+                    <div className="absolute right-0 w-1 h-5 lg:h-6 bg-primary rounded-l-full" />
                   )}
                 </>
               )}
@@ -166,7 +144,7 @@ const Sidebar = ({ collapsed, onToggle, isMobileOpen, onCloseMobile }) => {
           ))}
         </nav>
 
-        <div className="p-6 space-y-2 border-t border-border dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+        <div className="p-6 space-y-2 border-t border-border dark:border-slate-700 bg-gray-50/50 dark:bg-white/[0.02]">
           <button
             onClick={handleLogout}
             className="flex w-full items-center gap-4 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all font-bold text-sm"
@@ -179,16 +157,13 @@ const Sidebar = ({ collapsed, onToggle, isMobileOpen, onCloseMobile }) => {
             onClick={onToggle}
             className="hidden lg:flex w-full items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-all font-bold text-sm"
           >
-            <motion.div
-              animate={{ rotate: collapsed ? 180 : 0 }}
-              className="shrink-0"
-            >
+            <div className={`shrink-0 transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`}>
               <ChevronLeft size={20} />
-            </motion.div>
+            </div>
             {!collapsed && <span>Collapse Menu</span>}
           </button>
         </div>
-      </motion.aside>
+      </aside>
     </>
   );
 };

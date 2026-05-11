@@ -36,7 +36,6 @@ const ApplicantDetail = () => {
 
   const handleUpdateStage = () => {
     if (!selectedStage) return;
-    console.log("Sending stage update:", selectedStage);
     updateStage.mutate({ id, data: { stage: selectedStage } });
   };
 
@@ -62,7 +61,7 @@ const ApplicantDetail = () => {
          {/* Left Column (Main Info) */}
          <div className="lg:col-span-2 space-y-8 min-w-0">
             {/* Header Card */}
-            <div className="card p-6 md:p-10 bg-white dark:bg-[#1A1A1A] border border-border dark:border-white/5 shadow-sm relative overflow-hidden rounded-[2.5rem]">
+            <div className="card p-6 md:p-10 bg-white dark:bg-slate-800 border border-border dark:border-slate-700 shadow-sm relative overflow-hidden rounded-[2.5rem]">
                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10 text-center md:text-left">
                   <Avatar src={candidate?.userImage} name={candidate?.name} size="xl" className="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] shadow-xl" />
@@ -76,7 +75,7 @@ const ApplicantDetail = () => {
                   </div>
                </div>
 
-               <div className="flex flex-col sm:flex-row items-center gap-4 p-6 bg-gray-50 dark:bg-white/[0.02] rounded-[2rem] border border-border dark:border-white/5">
+               <div className="flex flex-col sm:flex-row items-center gap-4 p-6 bg-gray-50 dark:bg-white/[0.02] rounded-[2rem] border border-border dark:border-slate-700">
                   <div className="p-3 bg-primary/10 rounded-2xl text-primary">
                     <FileText size={24} />
                   </div>
@@ -104,7 +103,7 @@ const ApplicantDetail = () => {
          {/* Right Column (Actions & Notes) */}
          <div className="space-y-8 min-w-0">
             {/* Stage Actions */}
-            <div className="card p-8 bg-white dark:bg-[#1A1A1A] border border-border dark:border-white/5 shadow-sm rounded-[2.5rem]">
+            <div className="card p-8 bg-white dark:bg-slate-800 border border-border dark:border-slate-700 shadow-sm rounded-[2.5rem]">
                <h3 className="text-[10px] font-black text-text-secondary dark:text-gray-500 uppercase tracking-widest mb-8">Current Progress</h3>
                <div className="mb-10">
                   <div className="text-[10px] font-black text-text-secondary dark:text-gray-600 uppercase mb-3 px-1">Current Stage</div>
@@ -117,7 +116,7 @@ const ApplicantDetail = () => {
                     <select 
                       value={selectedStage || currentStage}
                       onChange={(e) => setSelectedStage(e.target.value)}
-                      className="w-full bg-gray-50 dark:bg-white/5 border border-border dark:border-white/5 rounded-2xl p-4 text-sm font-bold focus:ring-4 focus:ring-primary/10 appearance-none dark:text-white"
+                      className="w-full bg-gray-50 dark:bg-white/5 border border-border dark:border-slate-700 rounded-2xl p-4 text-sm font-bold focus:ring-4 focus:ring-primary/10 appearance-none dark:text-white"
                     >
                        {PIPELINE_STAGES.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
@@ -128,18 +127,18 @@ const ApplicantDetail = () => {
             </div>
 
             {/* History */}
-            <div className="card p-8 bg-white dark:bg-[#1A1A1A] border border-border dark:border-white/5 shadow-sm rounded-[2.5rem]">
+            <div className="card p-8 bg-white dark:bg-slate-800 border border-border dark:border-slate-700 shadow-sm rounded-[2.5rem]">
                <h3 className="text-[10px] font-black text-text-secondary dark:text-gray-500 uppercase tracking-widest mb-8">Application Journey</h3>
                <StageHistory history={stageHistory} />
             </div>
 
             {/* Notes */}
-            <div className="card p-8 bg-white dark:bg-[#1A1A1A] border border-border dark:border-white/5 shadow-sm rounded-[2.5rem]">
+            <div className="card p-8 bg-white dark:bg-slate-800 border border-border dark:border-slate-700 shadow-sm rounded-[2.5rem]">
                <h3 className="text-[10px] font-black text-text-secondary dark:text-gray-500 uppercase tracking-widest mb-6">Internal Notes</h3>
                <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
                   {application.notes?.length === 0 && <p className="text-xs text-text-secondary dark:text-gray-600 italic text-center py-4">No notes yet.</p>}
                   {application.notes?.map((note, i) => (
-                    <div key={i} className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-transparent dark:border-white/5">
+                    <div key={i} className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-transparent dark:border-slate-700">
                        <p className="text-xs text-text-primary dark:text-gray-300 mb-3 leading-relaxed font-medium">{note.text}</p>
                        <div className="flex items-center justify-between text-[8px] font-black text-text-secondary dark:text-gray-500 uppercase tracking-tighter">
                           <span>{note.addedBy?.name || 'Recruiter'}</span>
@@ -150,7 +149,7 @@ const ApplicantDetail = () => {
                </div>
                <div className="space-y-4">
                   <textarea 
-                    className="w-full bg-gray-50 dark:bg-white/5 border border-border dark:border-white/5 rounded-2xl p-4 text-xs focus:ring-4 focus:ring-primary/10 dark:text-white resize-none" 
+                    className="w-full bg-gray-50 dark:bg-white/5 border border-border dark:border-slate-700 rounded-2xl p-4 text-xs focus:ring-4 focus:ring-primary/10 dark:text-white resize-none" 
                     placeholder="Add a private note..." 
                     rows={4}
                     value={noteText}

@@ -161,7 +161,7 @@ const JobForm = ({ initialData, onSubmit, isLoading }) => {
             <div className="grid grid-cols-3 gap-4">
               <Input label="Min Salary" type="number" {...register('salaryRange.min')} error={errors.salaryRange?.min?.message} />
               <Input label="Max Salary" type="number" {...register('salaryRange.max')} error={errors.salaryRange?.max?.message} />
-              <Select label="Currency" {...register('salaryRange.currency')} options={[{ label: 'USD', value: 'USD' }, { label: 'EUR', value: 'EUR' }, { label: 'PKR', value: 'PKR' }, { label: 'INR', vlaue: 'INR' }]} />
+              <Select label="Currency" {...register('salaryRange.currency')} options={[{ label: 'USD', value: 'USD' }, { label: 'EUR', value: 'EUR' }, { label: 'PKR', value: 'PKR' }, { label: 'INR', value: 'INR' }]} />
             </div>
             <Select label="Status" {...register('status')} options={[{ label: 'Active', value: 'active' }, { label: 'Draft', value: 'draft' }]} />
           </div>
@@ -203,7 +203,7 @@ const JobForm = ({ initialData, onSubmit, isLoading }) => {
               </div>
               <div className="flex flex-col gap-2">
                 {formData.requirements.map((req, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl group">
+                  <div key={`req-${i}-${req.substring(0, 10)}`} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl group">
                     <span className="text-sm text-gray-600 dark:text-gray-400">{req}</span>
                     <button type="button" onClick={() => setValue('requirements', formData.requirements.filter((_, idx) => idx !== i))} className="text-gray-400 hover:text-red-500 transition-colors">
                       <X size={18} />
@@ -222,7 +222,7 @@ const JobForm = ({ initialData, onSubmit, isLoading }) => {
               </div>
               <div className="flex flex-wrap gap-2">
                 {formData.skills.map((skill, i) => (
-                  <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full text-sm font-bold border border-amber-100 dark:border-amber-800">
+                  <div key={`skill-${i}-${skill}`} className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full text-sm font-bold border border-amber-100 dark:border-amber-800">
                     {skill}
                     <button type="button" onClick={() => setValue('skills', formData.skills.filter((_, idx) => idx !== i))} className="hover:text-amber-900 dark:hover:text-white">
                       <X size={14} />

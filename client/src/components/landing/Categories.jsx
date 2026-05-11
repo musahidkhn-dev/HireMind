@@ -15,15 +15,15 @@ const Categories = () => {
   };
 
   return (
-    <section className="py-12 bg-white dark:bg-black overflow-hidden border-b border-gray-100 dark:border-gray-800">
-      <div className="flex flex-col gap-4">
+    <section className="py-8 lg:py-12 bg-white dark:bg-black overflow-hidden border-b border-gray-100 dark:border-gray-800">
+      <div className="flex flex-col gap-3 lg:gap-4">
         {/* Row 1 */}
-        <div className="flex animate-infinite-scroll whitespace-nowrap gap-4">
+        <div className="flex animate-infinite-scroll whitespace-nowrap gap-3 lg:gap-4">
           {[...categories, ...categories].map((cat, idx) => (
             <button
               key={idx}
               onClick={() => handleCategoryClick(cat)}
-              className="px-6 py-3 rounded-full bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 font-bold border border-gray-100 dark:border-gray-800 hover:border-amber-500 hover:text-amber-600 transition-all shrink-0"
+              className="px-4 lg:px-6 py-2 lg:py-3 rounded-full bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 font-bold border border-gray-100 dark:border-gray-800 hover:border-amber-500 hover:text-amber-600 transition-all shrink-0 text-[10px] lg:text-sm"
             >
               {cat}
             </button>
@@ -31,12 +31,12 @@ const Categories = () => {
         </div>
         
         {/* Row 2 (Reverse) */}
-        <div className="flex animate-infinite-scroll-reverse whitespace-nowrap gap-4">
+        <div className="flex animate-infinite-scroll-reverse whitespace-nowrap gap-3 lg:gap-4">
           {[...categories.reverse(), ...categories].map((cat, idx) => (
             <button
               key={idx}
               onClick={() => handleCategoryClick(cat)}
-              className="px-6 py-3 rounded-full bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 font-bold border border-gray-100 dark:border-gray-800 hover:border-amber-500 hover:text-amber-600 transition-all shrink-0"
+              className="px-4 lg:px-6 py-2 lg:py-3 rounded-full bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 font-bold border border-gray-100 dark:border-gray-800 hover:border-amber-500 hover:text-amber-600 transition-all shrink-0 text-[10px] lg:text-sm"
             >
               {cat}
             </button>

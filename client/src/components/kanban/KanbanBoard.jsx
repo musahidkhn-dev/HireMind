@@ -22,7 +22,6 @@ const KanbanBoard = ({ applications = [] }) => {
     if (!application) return;
 
     // Call mutation with new stage
-    console.log("Dragging application to new stage:", destination.droppableId);
     updateStage.mutate({
       id: draggableId,
       data: { stage: destination.droppableId }

@@ -24,13 +24,7 @@ const MyApplications = () => {
   const applications = data?.applications || [];
   const withdrawMutation = useWithdrawApplication();
 
-  // ✅ STEP 7: Debug (MANDATORY)
-  useEffect(() => {
-    console.log("--- Dashboard Debug ---");
-    console.log("ActiveStatus:", activeStatus);
-    console.log("Total Applications:", applications.length);
-    console.log("Raw Data Samples:", applications.slice(0, 2));
-  }, [activeStatus, applications]);
+
 
   // ✅ STEP 3 & 4: PURE FILTER FUNCTION + USE MEMO
   const filteredApplications = useMemo(() => {
@@ -50,7 +44,7 @@ const MyApplications = () => {
 
   // ✅ STEP 6: FIX BUTTON CLICK HANDLER
   const handleStatusChange = (status) => {
-    console.log("Switching to:", status);
+
     setActiveStatus(status);
   };
 
@@ -66,8 +60,8 @@ const MyApplications = () => {
         </div>
         
         {/* Optional: Quick Stats */}
-        <div className="flex items-center gap-6 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-border dark:border-white/5">
-           <div className="text-center px-4 border-r border-border dark:border-white/10">
+        <div className="flex items-center gap-6 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-border dark:border-slate-700">
+           <div className="text-center px-4 border-r border-border dark:border-slate-600">
               <p className="text-[10px] font-bold text-text-secondary dark:text-gray-500 uppercase tracking-widest mb-1">Total</p>
               <p className="text-xl font-black text-primary">{applications.length}</p>
            </div>
@@ -89,7 +83,7 @@ const MyApplications = () => {
               className={`px-6 py-3 rounded-xl text-sm font-bold whitespace-nowrap transition-all flex items-center gap-2 ${
                 activeStatus === status 
                   ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                  : 'bg-white dark:bg-gray-900 text-text-secondary dark:text-gray-400 border border-border dark:border-white/5 hover:border-primary/30'
+                  : 'bg-white dark:bg-gray-900 text-text-secondary dark:text-gray-400 border border-border dark:border-slate-700 hover:border-primary/30'
               }`}
             >
               {status}
@@ -105,7 +99,7 @@ const MyApplications = () => {
               placeholder="Search by company or role..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white dark:bg-[#1A1A1A] border border-border dark:border-white/5 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-primary/5 transition-all dark:text-white font-medium"
+              className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border border-border dark:border-slate-700 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-primary/5 transition-all dark:text-white font-medium"
             />
           </div>
           
@@ -174,19 +168,7 @@ const MyApplications = () => {
                 onAction={() => navigate('/jobs')}
               />
               
-              {/* ✅ STEP 10: HARD FAIL SAFETY (Debug raw data if empty unexpectedly) */}
-              {applications.length > 0 && (
-                <div className="mt-20 p-6 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashed border-border dark:border-white/10">
-                  <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-4">Debug View (Raw Statuses)</p>
-                  <div className="flex flex-wrap gap-2">
-                    {Array.from(new Set(applications.map(a => a.currentStage || a.status))).map(s => (
-                      <span key={s} className="px-2 py-1 bg-white dark:bg-gray-800 rounded text-[10px] font-mono border border-border">
-                        "{s}"
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+
             </motion.div>
           )}
         </AnimatePresence>

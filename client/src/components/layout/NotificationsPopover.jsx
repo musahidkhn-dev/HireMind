@@ -101,75 +101,69 @@ const NotificationsPopover = ({ isOpen, onClose }) => {
         )}
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <div className="fixed inset-0 z-40" onClick={onClose} />
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              className="absolute right-0 mt-4 w-80 bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[2rem] shadow-2xl z-50 overflow-hidden"
-            >
-              <div className="p-6 border-b border-gray-50 dark:border-gray-800 flex items-center justify-between">
-                <h3 className="font-black text-gray-900 dark:text-white">Notifications</h3>
-                <button 
-                  onClick={() => markAllReadMutation.mutate()}
-                  className="text-xs font-bold text-amber-600 hover:underline"
-                >
-                  Mark all as read
-                </button>
-              </div>
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={onClose} />
+          <div
+            className="absolute right-0 mt-4 w-80 bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-[2rem] shadow-2xl z-50 overflow-hidden"
+          >
+            <div className="p-6 border-b border-gray-50 dark:border-gray-800 flex items-center justify-between">
+              <h3 className="font-black text-gray-900 dark:text-white">Notifications</h3>
+              <button 
+                onClick={() => markAllReadMutation.mutate()}
+                className="text-xs font-bold text-amber-600 hover:underline"
+              >
+                Mark all as read
+              </button>
+            </div>
 
-              <div className="max-h-[400px] overflow-y-auto">
-                {notifications.length > 0 ? (
-                  <div className="divide-y divide-gray-50 dark:divide-gray-800">
-                    {notifications.map((n) => (
-                      <div 
-                        key={n._id} 
-                        className={`p-4 flex gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer ${!n.isRead ? 'bg-amber-50/30 dark:bg-amber-900/10' : ''}`}
-                        onClick={() => handleNotificationClick(n)}
-                      >
-                        <div className="shrink-0 mt-1">{getIcon(n.type)}</div>
-                        <div className="flex-1">
-                          <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-1">{n.title}</p>
-                          <p className="text-xs text-gray-500 line-clamp-2 mb-2">{n.message}</p>
-                          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">
-                            {formatDistanceToNow(new Date(n.createdAt))} ago
-                          </p>
-                        </div>
+            <div className="max-h-[400px] overflow-y-auto">
+              {notifications.length > 0 ? (
+                <div className="divide-y divide-gray-50 dark:divide-gray-800">
+                  {notifications.map((n) => (
+                    <div 
+                      key={n._id} 
+                      className={`p-4 flex gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer ${!n.isRead ? 'bg-amber-50/30 dark:bg-amber-900/10' : ''}`}
+                      onClick={() => handleNotificationClick(n)}
+                    >
+                      <div className="shrink-0 mt-1">{getIcon(n.type)}</div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-1">{n.title}</p>
+                        <p className="text-xs text-gray-500 line-clamp-2 mb-2">{n.message}</p>
+                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">
+                          {formatDistanceToNow(new Date(n.createdAt))} ago
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="py-12 text-center">
-                    <Bell size={40} className="mx-auto text-gray-200 mb-4" />
-                    <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">No new notifications</p>
-                  </div>
-                )}
-              </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-12 text-center">
+                  <Bell size={40} className="mx-auto text-gray-200 mb-4" />
+                  <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">No new notifications</p>
+                </div>
+              )}
+            </div>
 
-              <div className="p-4 bg-gray-50 dark:bg-gray-900/50 text-center">
-                 <button 
-                  onClick={() => {
-                    // FIXED: Handle super_admin routing
-                    const basePath = user?.role === 'candidate' 
-                      ? '/dashboard/candidate' 
-                      : (user?.role === 'superadmin' || user?.role === 'super_admin')
-                        ? '/dashboard/admin'
-                        : '/dashboard/company';
-                    navigate(`${basePath}/notifications`);
-                    onClose();
-                  }}
-                  className="text-sm font-bold text-gray-500 hover:text-amber-600 transition-colors"
-                 >
-                    View All Notifications
-                 </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+            <div className="p-4 bg-gray-50 dark:bg-gray-900/50 text-center">
+               <button 
+                onClick={() => {
+                  const basePath = user?.role === 'candidate' 
+                    ? '/dashboard/candidate' 
+                    : (user?.role === 'superadmin' || user?.role === 'super_admin')
+                      ? '/dashboard/admin'
+                      : '/dashboard/company';
+                  navigate(`${basePath}/notifications`);
+                  onClose();
+                }}
+                className="text-sm font-bold text-gray-500 hover:text-amber-600 transition-colors"
+               >
+                  View All Notifications
+               </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -18,16 +18,16 @@ const KanbanColumn = ({ stage, applications = [] }) => {
   }[stage] || 'bg-gray-500';
 
   return (
-    <div className="flex-shrink-0 w-80 bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-4 border border-gray-100 dark:border-gray-800 flex flex-col h-full">
+    <div className="flex-shrink-0 w-72 lg:w-80 bg-gray-50 dark:bg-slate-800/50 rounded-xl lg:rounded-2xl p-3 lg:p-4 border border-border dark:border-slate-700 flex flex-col h-full shadow-sm">
       {/* Column Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className={`w-2.5 h-2.5 rounded-full ${colorClass}`} />
-          <h3 className="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-xs">
+      <div className="flex items-center justify-between mb-4 lg:mb-6">
+        <div className="flex items-center gap-2 lg:gap-3">
+          <div className={`w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full ${colorClass}`} />
+          <h3 className="font-bold text-text-primary dark:text-white uppercase tracking-wider text-[10px] lg:text-xs">
             {stage}
           </h3>
         </div>
-        <Badge variant="default" size="sm">{applications.length}</Badge>
+        <Badge variant="default" size="sm" className="h-5 lg:h-6 px-1.5 lg:px-2">{applications.length}</Badge>
       </div>
 
       {/* Droppable Area */}
@@ -37,12 +37,12 @@ const KanbanColumn = ({ stage, applications = [] }) => {
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={`flex-1 flex flex-col gap-4 min-h-[100px] transition-colors rounded-xl p-1 ${
-              snapshot.isDraggingOver ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''
+              snapshot.isDraggingOver ? 'bg-primary/5 dark:bg-primary/10 ring-1 ring-primary/20' : ''
             }`}
           >
             {applications.length === 0 && !snapshot.isDraggingOver && (
               <div className="flex flex-col items-center justify-center py-10 opacity-40">
-                <p className="text-xs font-bold text-gray-400">NO APPLICANTS</p>
+                <p className="text-[10px] font-black text-text-secondary dark:text-gray-500 tracking-widest uppercase">NO APPLICANTS</p>
               </div>
             )}
             {applications.map((app, index) => (

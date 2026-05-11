@@ -64,52 +64,63 @@ const JobsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0F0F0F] transition-colors duration-300">
-      {/* Search Hero — REDESIGN: Elegant & Minimal */}
-      <div className="bg-white dark:bg-[#0F0F0F] border-b border-border dark:border-white/5 pt-20 pb-32 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] dark:opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#C5A16E 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+    <div className="min-h-screen bg-[#F5F7FB] dark:bg-slate-900 transition-colors duration-300">
+      {/* Search Hero — REDESIGN: Editorial & Premium */}
+      <div className="bg-white dark:bg-slate-900 border-b border-border dark:border-slate-800 pt-20 pb-20 lg:pt-28 lg:pb-28 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#4F46E5 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
         
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-text-primary dark:text-white mb-6 leading-tight tracking-tight">
+        <div className="max-w-7xl mx-auto px-5 relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-4xl mx-auto mb-10 lg:mb-16"
+          >
+            <h1 className="text-3xl lg:text-7xl font-serif text-slate-900 dark:text-white mb-4 lg:mb-6 leading-tight tracking-tight">
               Find your next <span className="text-primary italic">career</span> milestone
             </h1>
-            <p className="text-text-secondary dark:text-gray-400 text-lg mb-12 max-w-xl font-medium">
-              Browse through curated opportunities from the world's most innovative companies.
+            <p className="text-slate-500 dark:text-gray-400 text-sm lg:text-xl max-w-2xl mx-auto font-medium">
+              Explore curated opportunities from industry leaders and high-growth startups.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col lg:flex-row items-center gap-2 bg-white dark:bg-[#1A1A1A] p-3 rounded-[2.5rem] shadow-2xl dark:shadow-none shadow-primary/10 border border-border dark:border-white/5">
-            <div className="flex-1 flex items-center gap-4 px-6 py-4 w-full group">
-              <Search size={22} className="text-primary group-focus-within:scale-110 transition-transform" />
-              <input
-                type="text"
-                placeholder="Job title, keywords, or company"
-                value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                className="bg-transparent border-none outline-none text-text-primary dark:text-white w-full font-bold placeholder:text-text-secondary/50 dark:placeholder:text-gray-600"
-              />
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 bg-white dark:bg-slate-800 p-2 lg:p-2.5 rounded-[1.2rem] lg:rounded-[2rem] shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700">
+              <div className="flex-1 flex items-center gap-3 px-4 lg:px-6 py-3 lg:py-4 group">
+                <Search size={20} className="text-primary/70 group-focus-within:text-primary transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Job title or company"
+                  value={filters.search}
+                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                  className="bg-transparent border-none outline-none text-slate-900 dark:text-white w-full font-bold text-sm lg:text-base placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                />
+              </div>
+              <div className="hidden lg:block w-px h-8 bg-slate-100 dark:bg-slate-700 mx-1" />
+              <div className="flex-1 flex items-center gap-3 px-4 lg:px-6 py-3 lg:py-4 group border-t lg:border-t-0 border-slate-50 dark:border-slate-700">
+                <MapPin size={20} className="text-primary/70 group-focus-within:text-primary transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Location or remote"
+                  value={filters.location}
+                  onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+                  className="bg-transparent border-none outline-none text-slate-900 dark:text-white w-full font-bold text-sm lg:text-base placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                />
+              </div>
+              <Button size="lg" className="rounded-xl lg:rounded-[1.5rem] w-full lg:w-auto px-8 lg:px-12 py-3 lg:py-5 shadow-lg shadow-primary/20 text-sm lg:text-base font-bold">
+                Search
+              </Button>
             </div>
-            <div className="hidden lg:block w-px h-10 bg-border dark:bg-white/10 mx-2" />
-            <div className="flex-1 flex items-center gap-4 px-6 py-4 w-full group">
-              <MapPin size={22} className="text-primary group-focus-within:scale-110 transition-transform" />
-              <input
-                type="text"
-                placeholder="City, state, or remote"
-                value={filters.location}
-                onChange={(e) => setFilters({ ...filters, location: e.target.value })}
-                className="bg-transparent border-none outline-none text-text-primary dark:text-white w-full font-bold placeholder:text-text-secondary/50 dark:placeholder:text-gray-600"
-              />
-            </div>
-            <Button size="xl" className="rounded-[2rem] w-full lg:w-auto px-12 shadow-xl shadow-primary/20">
-              Search Jobs
-            </Button>
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 -mt-16 pb-32 relative z-20">
+      <div className="max-w-7xl mx-auto px-5 -mt-10 lg:-mt-12 pb-24 relative z-20">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0">
@@ -136,7 +147,7 @@ const JobsPage = () => {
                 </div>
               </div>
               
-              <div className="flex items-center gap-4 bg-white dark:bg-[#1A1A1A] px-4 py-2 rounded-2xl border border-border dark:border-white/5 shadow-sm">
+              <div className="flex items-center gap-4 bg-white dark:bg-slate-800 px-4 py-2 rounded-2xl border border-border dark:border-slate-700 shadow-sm">
                 <ArrowUpDown size={16} className="text-text-secondary dark:text-gray-500" />
                 <select
                   value={filters.sortBy}
@@ -173,7 +184,7 @@ const JobsPage = () => {
                   ))}
                 </motion.div>
               ) : (
-                <div key="empty" className="bg-white dark:bg-[#1A1A1A] rounded-[2.5rem] border-2 border-dashed border-border dark:border-white/5 py-24 text-center">
+                <div key="empty" className="bg-white dark:bg-slate-800 rounded-[2.5rem] border-2 border-dashed border-border dark:border-slate-700 py-24 text-center">
                   <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Search size={32} className="text-text-secondary/30 dark:text-gray-600" />
                   </div>

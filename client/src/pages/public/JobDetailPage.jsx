@@ -76,9 +76,9 @@ const JobDetailPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0F0F0F] pb-32 transition-colors duration-300">
+    <div className="min-h-screen bg-[#F5F7FB] dark:bg-slate-900 pb-32 transition-colors duration-300">
       {/* Sticky Header Bar — REDESIGN: Elegant & Minimal */}
-      <div className="bg-white/80 dark:bg-[#0F0F0F]/80 backdrop-blur-md border-b border-border dark:border-white/5 sticky top-0 z-40 py-4 px-6">
+      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-border dark:border-slate-700 sticky top-0 z-40 py-4 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
            <button onClick={() => navigate(-1)} className="flex items-center gap-3 text-sm font-bold text-text-secondary dark:text-gray-500 hover:text-primary transition-all group">
               <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
@@ -105,7 +105,7 @@ const JobDetailPage = () => {
              {/* Hero Title Section */}
              <div className="relative">
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10 text-center md:text-left">
-                   <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-white dark:bg-[#1A1A1A] border border-border dark:border-white/5 flex items-center justify-center p-6 shadow-2xl shadow-primary/5 group-hover:scale-105 transition-transform overflow-hidden shrink-0">
+                   <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2.5rem] bg-white dark:bg-slate-800 border border-border dark:border-slate-700 flex items-center justify-center p-6 shadow-2xl shadow-primary/5 group-hover:scale-105 transition-transform overflow-hidden shrink-0">
                       {job.company?.logo ? (
                         <img src={getImageUrl(job.company.logo)} alt="" className="w-full h-full object-contain" />
                       ) : <Building2 size={48} className="text-primary/20" />}
@@ -126,7 +126,7 @@ const JobDetailPage = () => {
                    </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-border dark:border-white/5">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-border dark:border-slate-700">
                    <div className="space-y-3">
                       <span className="text-[10px] font-black text-text-secondary dark:text-gray-500 uppercase tracking-[0.2em]">Location</span>
                       <div className="flex items-center gap-3 text-sm font-bold text-text-primary dark:text-gray-300">
@@ -157,7 +157,7 @@ const JobDetailPage = () => {
                    <div className="space-y-3">
                       <span className="text-[10px] font-black text-text-secondary dark:text-gray-500 uppercase tracking-[0.2em]">Published</span>
                       <div className="flex items-center gap-3 text-sm font-bold text-text-primary dark:text-gray-300">
-                         <div className="w-8 h-8 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-text-secondary border border-border dark:border-white/5">
+                         <div className="w-8 h-8 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-text-secondary border border-border dark:border-slate-700">
                             <Clock size={16} />
                          </div>
                          <span className="truncate">{timeAgo(job.createdAt)}</span>
@@ -175,7 +175,7 @@ const JobDetailPage = () => {
 
              {/* Requirements & Skills */}
              <div className="grid md:grid-cols-2 gap-8 pt-8">
-                <div className="p-8 md:p-10 bg-white dark:bg-[#1A1A1A] rounded-[2.5rem] border border-border dark:border-white/5 shadow-sm">
+                <div className="p-8 md:p-10 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-border dark:border-slate-700 shadow-sm">
                    <h3 className="text-2xl font-serif text-text-primary dark:text-white mb-8">What we're looking for</h3>
                    <ul className="space-y-5">
                       {(Array.isArray(job.requirements) ? job.requirements : []).map((req, idx) => (
@@ -189,7 +189,7 @@ const JobDetailPage = () => {
                    </ul>
                 </div>
 
-                <div className="p-8 md:p-10 bg-white dark:bg-[#1A1A1A] rounded-[2.5rem] border border-border dark:border-white/5 shadow-sm">
+                <div className="p-8 md:p-10 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-border dark:border-slate-700 shadow-sm">
                    <h3 className="text-2xl font-serif text-text-primary dark:text-white mb-8">Preferred Expertise</h3>
                    <div className="flex flex-wrap gap-3">
                       {(Array.isArray(job.skills) ? job.skills : []).map((skill, idx) => (
@@ -197,7 +197,7 @@ const JobDetailPage = () => {
                       ))}
                    </div>
                    <div className="mt-12 p-8 bg-primary/5 dark:bg-primary/10 rounded-[2rem] border border-primary/10 flex gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#1A1A1A] flex items-center justify-center text-primary shadow-xl shadow-primary/5 shrink-0">
+                      <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center text-primary shadow-xl shadow-primary/5 shrink-0">
                         <Brain size={28} />
                       </div>
                       <div>
@@ -214,8 +214,8 @@ const JobDetailPage = () => {
           {/* Sidebar */}
           <aside className="lg:w-96">
              <div className="sticky top-32 space-y-10">
-                <div className="p-10 bg-white dark:bg-[#1A1A1A] rounded-[2.5rem] border border-border dark:border-white/5 shadow-sm text-center">
-                <div className="w-24 h-24 rounded-[2.5rem] bg-gray-50 dark:bg-white/5 border border-border dark:border-white/5 p-4 flex items-center justify-center mx-auto mb-8 shadow-inner overflow-hidden">
+                <div className="p-10 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-border dark:border-slate-700 shadow-sm text-center">
+                <div className="w-24 h-24 rounded-[2.5rem] bg-gray-50 dark:bg-white/5 border border-border dark:border-slate-700 p-4 flex items-center justify-center mx-auto mb-8 shadow-inner overflow-hidden">
                   {job.company?.logo ? (
                     <img src={getImageUrl(job.company.logo)} alt="" className="w-full h-full object-contain" />
                   ) : <Building2 size={32} className="text-text-secondary/20" />}
@@ -225,7 +225,7 @@ const JobDetailPage = () => {
                   {job.company?.description?.slice(0, 120)}...
                 </p>
                 
-                <div className="space-y-4 text-left border-t border-border dark:border-white/5 pt-8 mb-8">
+                <div className="space-y-4 text-left border-t border-border dark:border-slate-700 pt-8 mb-8">
                    <div className="flex items-center gap-4 text-sm font-bold text-text-primary dark:text-gray-300 group">
                       <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-text-secondary dark:text-gray-500 group-hover:bg-primary/5 group-hover:text-primary transition-all">
                         <Globe size={18} />
@@ -288,11 +288,11 @@ const JobDetailPage = () => {
         onClose={() => setIsApplyModalOpen(false)} 
         title="Application Journey"
         size="md"
-        className="dark:bg-[#1A1A1A]"
+        className="dark:bg-slate-800"
       >
-        <form onSubmit={handleApplySubmit} className="space-y-8 p-4 bg-white dark:bg-[#1A1A1A]">
+        <form onSubmit={handleApplySubmit} className="space-y-8 p-4 bg-white dark:bg-slate-800">
            <div className="flex items-center gap-4 p-6 bg-primary/5 dark:bg-primary/10 rounded-[2rem] border border-primary/10">
-              <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#1A1A1A] border border-border dark:border-white/5 flex items-center justify-center p-3 shadow-sm overflow-hidden">
+              <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 border border-border dark:border-slate-700 flex items-center justify-center p-3 shadow-sm overflow-hidden">
                 <img src={getImageUrl(job.company?.logo)} alt="" className="w-full h-full object-contain" />
               </div>
               <div className="min-w-0 flex-1">
@@ -304,14 +304,14 @@ const JobDetailPage = () => {
            {/* Resume Upload */}
            <div className="space-y-4">
               <label className="text-[10px] font-black text-text-secondary dark:text-gray-500 uppercase tracking-[0.2em] px-2">Submit Resume</label>
-              <div className="relative h-56 rounded-[2.5rem] border-2 border-dashed border-border dark:border-white/10 flex flex-col items-center justify-center p-10 bg-gray-50/50 dark:bg-white/[0.02] group hover:border-primary/50 hover:bg-primary/5 transition-all">
+              <div className="relative h-56 rounded-[2.5rem] border-2 border-dashed border-border dark:border-slate-600 flex flex-col items-center justify-center p-10 bg-gray-50/50 dark:bg-white/[0.02] group hover:border-primary/50 hover:bg-primary/5 transition-all">
                  <input 
                   type="file" 
                   accept=".pdf" 
                   onChange={(e) => setResume(e.target.files[0])}
                   className="absolute inset-0 opacity-0 cursor-pointer" 
                  />
-                 <div className="w-20 h-20 rounded-[1.5rem] bg-white dark:bg-[#1A1A1A] flex items-center justify-center text-primary shadow-2xl shadow-primary/10 mb-6 group-hover:scale-110 transition-transform">
+                 <div className="w-20 h-20 rounded-[1.5rem] bg-white dark:bg-slate-800 flex items-center justify-center text-primary shadow-2xl shadow-primary/10 mb-6 group-hover:scale-110 transition-transform">
                     <FileText size={32} />
                  </div>
                  <p className="text-sm font-bold text-text-primary dark:text-white">
@@ -327,7 +327,7 @@ const JobDetailPage = () => {
                 rows={5}
                 value={coverLetter}
                 onChange={(e) => setCoverLetter(e.target.value)}
-                className="w-full rounded-[2rem] border border-border dark:border-white/5 bg-white dark:bg-white/5 p-6 text-sm font-medium focus:border-primary/30 focus:ring-4 focus:ring-primary/5 transition-all outline-none placeholder:text-text-secondary/30 dark:text-white resize-none"
+                className="w-full rounded-[2rem] border border-border dark:border-slate-700 bg-white dark:bg-white/5 p-6 text-sm font-medium focus:border-primary/30 focus:ring-4 focus:ring-primary/5 transition-all outline-none placeholder:text-text-secondary/30 dark:text-white resize-none"
                 placeholder="Share your story and why you're a perfect match..."
               />
            </div>

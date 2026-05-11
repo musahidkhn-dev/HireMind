@@ -13,7 +13,7 @@ const TipsSection = () => {
 
   return (
     // REDESIGN: Dark background section with numbered tips list
-    <section className="bg-dark py-32 px-6 relative overflow-hidden">
+    <section className="bg-dark py-12 lg:py-24 px-4 lg:px-6 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
          <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
@@ -21,8 +21,8 @@ const TipsSection = () => {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="flex flex-col lg:flex-row gap-20 items-center">
-          {/* Left: Illustrations */}
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 items-center">
+          {/* Left: Illustrations (Hidden on small mobile for compactness) */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -30,36 +30,41 @@ const TipsSection = () => {
             className="flex-1 w-full hidden lg:flex justify-center"
           >
             {/* 3D Character Background Card */}
-            <div className="relative w-full max-w-md bg-gradient-to-br from-orange-50 to-amber-100 dark:from-slate-800 dark:to-slate-900 p-12 rounded-[3rem] shadow-2xl overflow-visible group">
+            <div className="relative w-full max-w-md bg-gradient-to-br from-orange-50 to-amber-100 dark:from-slate-800 dark:to-slate-900 p-8 lg:p-12 rounded-[2rem] lg:rounded-[3rem] shadow-2xl overflow-visible group">
                {/* Decorative Floating Elements */}
                <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
 
-               <motion.img
-                 src="/images/sitting-3d.png"
-                 alt="3D Character"
-                 onError={(e) => { e.target.src = "https://via.placeholder.com/600x600?text=3D+Character"; console.log("Tips Image failed to load"); }}
-                 onLoad={() => console.log("Tips Image loaded")}
-                 whileHover={{ scale: 1.05, rotate: 2 }}
+               {/* Premium Remote Work Photography from Unsplash */}
+               <motion.div
+                 whileHover={{ scale: 1.02 }}
                  transition={{ duration: 0.5, ease: "easeOut" }}
-                 className="w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-3xl relative z-10"
-               />
+                 className="relative z-10 w-full h-64 md:h-80 overflow-hidden rounded-3xl drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+               >
+                 <img
+                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
+                   alt="Cinematic Hiring Team"
+                   className="w-full h-full object-cover"
+                   loading="lazy"
+                 />
+                 <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-sky-900/30 mix-blend-overlay" />
+               </motion.div>
             </div>
           </motion.div>
 
           {/* Right: Tips Content */}
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-4xl md:text-5xl font-serif text-white mb-12"
+              className="text-2xl lg:text-5xl font-serif text-white mb-6 lg:mb-12 px-2 tracking-tight"
             >
               How to land your <br />
               <span className="text-primary italic">next big role</span> fast.
             </motion.h2>
 
-            <div className="space-y-10">
+            <div className="space-y-5 lg:space-y-10 px-2">
               {tips.map((tip, i) => (
                 <motion.div
                   key={i}
@@ -69,12 +74,12 @@ const TipsSection = () => {
                   transition={{ delay: i * 0.1 }}
                   className="group"
                 >
-                  <div className="flex items-start gap-6">
-                    <span className="text-5xl font-serif text-white/10 group-hover:text-primary/40 transition-colors duration-500">
+                  <div className="flex items-start gap-4 lg:gap-6">
+                    <span className="text-2xl lg:text-5xl font-serif text-white/10 group-hover:text-primary/40 transition-colors duration-500 shrink-0">
                       0{i + 1}
                     </span>
-                    <div className="pt-2">
-                      <p className="text-lg text-gray-300 leading-relaxed group-hover:text-white transition-colors">
+                    <div className="pt-1 lg:pt-2">
+                      <p className="text-[13px] lg:text-lg text-gray-300 leading-relaxed group-hover:text-white transition-colors">
                         {tip}
                       </p>
                     </div>

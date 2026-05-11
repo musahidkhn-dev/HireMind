@@ -27,7 +27,7 @@ export const loginUser = createAsyncThunk(
       localStorage.setItem('refreshToken', response.data.refreshToken);
       return response.data;
     } catch (error) {
-      console.log("Login Error Detail:", error.response?.data);
+
       return rejectWithValue(error.response?.data?.message || 'Login failed');
     }
   }

@@ -8,7 +8,9 @@ import { ROLES } from './utils/constants';
 import PublicLayout from './components/layout/PublicLayout';
 import DashboardLayout from './components/layout/DashboardLayout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import Loader from './components/common/Loader';
+import CinematicLoader from './components/common/CinematicLoader';
+import GradientBackground from './components/animations/GradientBackground';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 // Lazy load Pages
 const LandingPage = lazy(() => import('./pages/public/LandingPage'));
@@ -47,35 +49,27 @@ const UsersPage = lazy(() => import('./pages/admin/UsersPage'));
 const CompaniesPage = lazy(() => import('./pages/admin/CompaniesPage'));
 const AdminJobsPage = lazy(() => import('./pages/admin/JobsPage'));
 
-// Admin Detail Pages
 const AdminUserDetails = lazy(() => import('./pages/admin/AdminUserDetails'));
 const AdminCompanyDetails = lazy(() => import('./pages/admin/AdminCompanyDetails'));
 const AdminJobDetails = lazy(() => import('./pages/admin/AdminJobDetails'));
 
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 
-// FIXED: Improved RoleRedirect with switch and recruiter support
 const RoleRedirect = () => {
   const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
   const token = localStorage.getItem('accessToken');
   
-  if (loading) return <Loader fullScreen text="Verifying session..." />;
-  
+  if (loading) return <CinematicLoader fullScreen text="Verifying session..." />;
   if (!token) return <Navigate to="/login" replace />;
-  
-  if (!user) return <Loader fullScreen text="Fetching profile..." />;
+  if (!user) return <CinematicLoader fullScreen text="Fetching profile..." />;
 
   switch (user?.role) {
-    case 'candidate':
-      return <Navigate to="/dashboard/candidate" replace />;
+    case 'candidate': return <Navigate to="/dashboard/candidate" replace />;
     case 'company_admin':
-    case 'recruiter':
-      return <Navigate to="/dashboard/company" replace />;
+    case 'recruiter': return <Navigate to="/dashboard/company" replace />;
     case 'super_admin': 
-    case 'superadmin':
-      return <Navigate to="/dashboard/admin" replace />;
-    default:
-      return <Navigate to="/login" replace />;
+    case 'superadmin': return <Navigate to="/dashboard/admin" replace />;
+    default: return <Navigate to="/login" replace />;
   }
 };
 
@@ -84,36 +78,21 @@ import Lenis from "@studio-freight/lenis";
 const App = () => {
   const dispatch = useDispatch();
   const { mode } = useSelector((state) => state.theme);
-
-  const { pathname } = useLocation();
+  const location = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [location.pathname]);
 
   useEffect(() => {
-    const lenis = new Lenis({ 
-      duration: 0.8, 
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1.2,
-      smoothTouch: false,
-      touchMultiplier: 2,
-      infinite: false,
-    });
-
+    const lenis = new Lenis({ duration: 0.8 });
     window.lenis = lenis;
-
     let rafId;
     function raf(time) {
       lenis.raf(time);
       rafId = requestAnimationFrame(raf);
     }
-
     rafId = requestAnimationFrame(raf);
-
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
@@ -123,27 +102,20 @@ const App = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
-      dispatch(fetchCurrentUser());
-    } else {
-      dispatch(setInitialized());
-    }
+    if (token) dispatch(fetchCurrentUser());
+    else dispatch(setInitialized());
   }, [dispatch]);
 
   useEffect(() => {
-
-
-    if (mode === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    if (mode === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
   }, [mode]);
 
   return (
-    <Suspense fallback={<Loader fullScreen text="Powering up HireMind..." />}>
-        <Routes>
-          {/* Public Routes */}
+    <div className="min-h-screen">
+      <GradientBackground />
+      <Suspense fallback={<CinematicLoader fullScreen />}>
+        <Routes location={location}>
           <Route element={<PublicLayout />}>
             <Route path="/" element={<LandingPage />} />
             <Route path="/jobs" element={<JobsPage />} />
@@ -153,28 +125,14 @@ const App = () => {
             <Route path="/company/:id" element={<CompanyPublicProfile />} />
             <Route path="/candidate/:id" element={<CandidatePublicProfile />} />
           </Route>
-
-          {/* Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/social-callback" element={<SocialCallback />} />
           <Route path="/complete-profile" element={<CompleteProfile />} />
-
-          {/* Smart Redirect */}
           <Route path="/dashboard" element={<RoleRedirect />} />
-
-          {/* Admin Routes */}
-          <Route 
-            path="/dashboard/admin" 
-            element={
-              // FIXED: Added super_admin to allowedRoles
-              <ProtectedRoute allowedRoles={['superadmin', 'super_admin']}>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
+          <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={['superadmin', 'super_admin']}><ErrorBoundary><DashboardLayout /></ErrorBoundary></ProtectedRoute>}>
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<UsersPage />} />
             <Route path="users/:id" element={<AdminUserDetails />} />
@@ -183,32 +141,13 @@ const App = () => {
             <Route path="jobs" element={<AdminJobsPage />} />
             <Route path="jobs/:id" element={<AdminJobDetails />} />
           </Route>
-
-          {/* Candidate Routes */}
-          <Route 
-            path="/dashboard/candidate" 
-            element={
-              <ProtectedRoute allowedRoles={['candidate']}>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
+          <Route path="/dashboard/candidate" element={<ProtectedRoute allowedRoles={['candidate']}><ErrorBoundary><DashboardLayout /></ErrorBoundary></ProtectedRoute>}>
             <Route index element={<CandidateDashboard />} />
             <Route path="applications" element={<MyApplications />} />
             <Route path="profile" element={<CandidateProfile />} />
             <Route path="notifications" element={<NotificationsPage />} />
           </Route>
-
-          {/* Company Routes */}
-          <Route 
-            path="/dashboard/company" 
-            element={
-              // FIXED: Allowed roles for company routes
-              <ProtectedRoute allowedRoles={['company_admin', 'recruiter']}>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
+          <Route path="/dashboard/company" element={<ProtectedRoute allowedRoles={['company_admin', 'recruiter']}><ErrorBoundary><DashboardLayout /></ErrorBoundary></ProtectedRoute>}>
             <Route index element={<CompanyDashboard />} />
             <Route path="jobs" element={<JobManagement />} />
             <Route path="jobs/create" element={<CreateJob />} />
@@ -220,11 +159,10 @@ const App = () => {
             <Route path="activity" element={<ActivityPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
           </Route>
-
-          {/* Catch All */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
+    </div>
   );
 };
 

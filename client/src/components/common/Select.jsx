@@ -26,7 +26,7 @@ const Select = forwardRef(({
         {...rest}
       >
         {placeholder && (
-          <option value="" disabled selected>
+          <option key="placeholder" value="" disabled selected>
             {placeholder}
           </option>
         )}

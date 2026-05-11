@@ -32,13 +32,17 @@ if (savedTheme === 'dark') {
   document.documentElement.classList.remove('dark');
 }
 
+import { ErrorBoundary } from 'react-error-boundary';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <App />
+            <ErrorBoundary fallback={<div>Something went wrong. Please refresh.</div>}>
+              <App />
+            </ErrorBoundary>
           </BrowserRouter>
         </GoogleOAuthProvider>
         <Toaster 

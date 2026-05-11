@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { getImageUrl } from '../../utils/helpers';
 
 const sizes = {
+  xs: 'w-6 h-6 text-[8px]',
   sm: 'w-8 h-8 text-xs',
   md: 'w-10 h-10 text-sm',
   lg: 'w-12 h-12 text-base',
@@ -43,7 +44,7 @@ const Avatar = ({
           alt={name}
           className="h-full w-full object-cover"
           onError={() => {
-            console.log("Image load failed for URL:", imageUrl);
+
             setImgError(true);
           }}
         />

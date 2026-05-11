@@ -1,38 +1,35 @@
 import React, { useState } from 'react';
-import { useNavigate, Link, NavLink } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-hot-toast'; // FIXED: Add toast
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Menu, X, Sun, Moon, LogOut, LayoutDashboard, User, ChevronDown } from 'lucide-react';
 import { toggleTheme } from '../../store/themeSlice';
 import { logoutUser } from '../../store/authSlice';
-import { ROLES } from '../../utils/constants';
-import Button from '../common/Button';
+import { toast } from 'react-hot-toast';
+import { useQueryClient } from '@tanstack/react-query';
 import Avatar from '../common/Avatar';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false); // FIXED: Add isLoggingOut state
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const { mode } = useSelector((state) => state.theme);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  // FIXED: Centralized logout handler
   const handleLogout = async () => {
-    if (isLoggingOut) return;
-    setIsLoggingOut(true);
-    
-    queryClient.clear();                              // 1. clear cache
-    await dispatch(logoutUser());                     // 2. clear tokens
-    
-    toast.success('Logged out successfully');
-    setIsProfileOpen(false);
-    setIsOpen(false);
-    navigate('/login', { replace: true });            // 3. go to login
+    try {
+      queryClient.clear();
+      await dispatch(logoutUser()).unwrap();
+      toast.success('Logged out successfully');
+      setIsOpen(false);
+      setIsProfileOpen(false);
+      navigate('/');
+    } catch (error) {
+      toast.error('Logout failed');
+    }
   };
 
   const navLinks = [
@@ -44,190 +41,189 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => setIsOpen(!isOpen);
 
-  const profilePath = user?.role === ROLES.CANDIDATE 
-    ? '/dashboard/candidate/profile' 
-    : '/dashboard/company/profile';
-
   return (
-    // REDESIGN: White bg, clean border, no glass blur effect
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-[#0F0F0F]/80 backdrop-blur-md border-b border-border dark:border-white/5 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-primary rounded-2xl group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-primary/20">
-              <Brain className="text-white" size={24} />
+    <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          
+          {/* 🏷️ Logo */}
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="p-2 bg-slate-950 dark:bg-white rounded-xl transition-all group-hover:scale-105 active:scale-95 shadow-lg shadow-slate-950/10 dark:shadow-white/5">
+              <Brain className="text-white dark:text-slate-950" size={20} />
             </div>
-            <span className="text-2xl font-serif text-text-primary dark:text-white">
-              Hire<span className="text-primary italic">Mind</span>
+            <span className="text-xl font-bold tracking-tight text-slate-950 dark:text-white">
+              Hire<span className="text-indigo-600 dark:text-indigo-400">Mind</span>
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-10">
+          {/* 💻 Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <NavLink
+              <Link
                 key={link.path}
                 to={link.path}
-                className={({ isActive }) =>
-                  `text-sm font-medium transition-all relative py-2 ${
-                    isActive ? 'text-primary' : 'text-text-secondary dark:text-gray-400 hover:text-text-primary dark:hover:text-white'
-                  }`
-                }
+                className={`text-sm font-semibold transition-all hover:text-indigo-600 dark:hover:text-indigo-400 ${
+                  location.pathname === link.path 
+                    ? 'text-indigo-600 dark:text-indigo-400' 
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
               >
-                {({ isActive }) => (
-                  <>
-                    {link.label}
-                    {isActive && (
-                      <motion.div 
-                        layoutId="nav-underline"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
-                      />
-                    )}
-                  </>
-                )}
-              </NavLink>
+                {link.label}
+              </Link>
             ))}
           </div>
 
-          <div className="hidden md:flex items-center gap-6">
-            <button 
+          {/* 🛠️ Desktop Actions */}
+          <div className="hidden md:flex items-center gap-5">
+            <button
               onClick={() => dispatch(toggleTheme())}
-              className="p-2.5 rounded-2xl border border-border dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-text-secondary dark:text-gray-400"
+              className="p-2.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 rounded-xl transition-colors"
+              aria-label="Toggle Theme"
             >
               {mode === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
 
             {!isAuthenticated ? (
-              <div className="flex items-center gap-6">
-                <Link to="/login" className="text-sm font-medium text-text-secondary dark:text-gray-400 hover:text-text-primary dark:hover:text-white transition-colors">
+              <div className="flex items-center gap-3">
+                <Link 
+                  to="/login" 
+                  className="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors px-3"
+                >
                   Sign In
                 </Link>
                 <Link to="/register">
-                  <Button variant="primary" size="md" className="rounded-2xl shadow-xl shadow-primary/20">
+                  <button className="px-5 py-2.5 bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded-xl text-sm font-bold shadow-lg shadow-slate-900/10 dark:shadow-white/5 hover:scale-105 active:scale-95 transition-all">
                     Get Started
-                  </Button>
+                  </button>
                 </Link>
               </div>
             ) : (
               <div className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center gap-3 p-1.5 pl-4 rounded-2xl border border-border dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                  className="flex items-center gap-2.5 p-1 pr-3 rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all active:scale-95"
                 >
-                  <span className="text-sm font-medium text-text-primary dark:text-white">{user?.name?.split(' ')[0]}</span>
-                  <Avatar src={user?.userImage} name={user?.name} size="sm" />
+                  <Avatar src={user?.userImage} name={user?.name} size="sm" className="ring-1 ring-slate-100 dark:ring-slate-800" />
+                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{user?.name?.split(' ')[0]}</span>
+                  <ChevronDown size={14} className={`text-slate-400 transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                <AnimatePresence>
-                  {isProfileOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute right-0 mt-3 w-64 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-border dark:border-white/5 overflow-hidden p-2"
-                    >
-                      <div className="px-4 py-3 mb-2">
-                        <p className="text-sm font-semibold text-text-primary dark:text-white">{user?.name}</p>
-                        <p className="text-xs text-text-secondary dark:text-gray-400 truncate">{user?.email}</p>
-                      </div>
-                      <div className="space-y-1">
-                        <Link
-                          to="/dashboard"
-                          onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-3 p-3 text-sm text-text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
-                        >
-                          <LayoutDashboard size={18} />
-                          Dashboard
-                        </Link>
-                        <Link
-                          to={profilePath}
-                          onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-3 p-3 text-sm text-text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
-                        >
-                          <User size={18} />
-                          Profile
-                        </Link>
-                        <div className="h-px bg-border dark:bg-white/5 my-2 mx-2" />
-                        <button
-                          onClick={handleLogout}
-                          className="flex w-full items-center gap-3 p-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
-                        >
-                          <LogOut size={18} />
-                          Sign Out
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
-          </div>
-
-          <div className="md:hidden flex items-center gap-4">
-             <button 
-              onClick={() => dispatch(toggleTheme())}
-              className="p-2 text-text-secondary dark:text-gray-400"
+      {isProfileOpen && (
+        <div
+          className="absolute right-0 mt-3 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden"
+        >
+          <div className="p-2 space-y-1">
+            <Link
+              to="/dashboard"
+              onClick={() => setIsProfileOpen(false)}
+              className="flex items-center gap-3 p-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
             >
-              {mode === 'light' ? <Moon size={22} /> : <Sun size={22} />}
-            </button>
+              <LayoutDashboard size={18} /> Dashboard
+            </Link>
+            <Link
+              to="/profile"
+              onClick={() => setIsProfileOpen(false)}
+              className="flex items-center gap-3 p-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+            >
+              <User size={18} /> Profile
+            </Link>
+            <div className="h-px bg-slate-100 dark:bg-slate-800 my-1" />
             <button
-              onClick={toggleMobileMenu}
-              className="p-2 text-text-primary dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors"
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 p-3 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              <LogOut size={18} /> Sign Out
             </button>
           </div>
         </div>
-      </div>
+      )}
+    </div>
+  )}
+</div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden border-t border-border dark:border-white/5 bg-white dark:bg-[#0F0F0F] overflow-hidden"
+{/* 📱 Mobile Toggle */}
+<div className="md:hidden flex items-center gap-4">
+   <button
+    onClick={() => dispatch(toggleTheme())}
+    className="p-2 text-slate-500 dark:text-slate-400"
+  >
+    {mode === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+  </button>
+  <button
+    onClick={toggleMobileMenu}
+    className="p-2.5 text-slate-950 dark:text-white bg-slate-100 dark:bg-slate-800 rounded-xl active:scale-90 transition-transform"
+    aria-label="Toggle Menu"
+  >
+    {isOpen ? <X size={20} /> : <Menu size={20} />}
+  </button>
+</div>
+</div>
+</div>
+
+{/* 📱 Mobile Dropdown Menu (CLEAN & SIMPLE) */}
+{isOpen && (
+  <>
+    {/* Overlay background to catch clicks outside */}
+    <div 
+      onClick={() => setIsOpen(false)}
+      className="fixed inset-0 top-16 bg-slate-950/20 backdrop-blur-sm z-40 md:hidden"
+    />
+    
+    <div
+      className="absolute top-full right-4 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 z-50 md:hidden overflow-hidden"
+    >
+      <div className="p-3 flex flex-col gap-1">
+        {navLinks.map((link) => (
+          <Link
+            key={link.path}
+            to={link.path}
+            onClick={() => setIsOpen(false)}
+            className={`p-3.5 text-base font-bold rounded-xl transition-colors ${
+              location.pathname === link.path
+                ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
+                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+            }`}
           >
-            <div className="px-6 pt-4 pb-8 flex flex-col gap-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className="text-xl font-serif text-text-primary dark:text-white"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="h-px bg-border dark:bg-white/5" />
-              {!isAuthenticated ? (
-                <div className="flex flex-col gap-4">
-                  <Link to="/login" onClick={() => setIsOpen(false)} className="text-center font-medium text-text-secondary dark:text-gray-400">
-                    Sign In
-                  </Link>
-                  <Link to="/register" onClick={() => setIsOpen(false)}>
-                    <Button className="w-full shadow-xl shadow-primary/20">Get Started</Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  <Link to="/dashboard" onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-lg font-medium text-text-primary dark:text-white">
-                    <LayoutDashboard size={20} /> Dashboard
-                  </Link>
-                  <Link to={profilePath} onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-lg font-medium text-text-primary dark:text-white">
-                    <User size={20} /> Profile
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-3 text-lg font-medium text-red-500"
-                  >
-                    <LogOut size={20} /> Sign Out
-                  </button>
-                </div>
-              )}
-            </div>
-          </motion.div>
+            {link.label}
+          </Link>
+        ))}
+        
+        <div className="h-px bg-slate-100 dark:bg-slate-800 my-2 mx-2" />
+
+        {!isAuthenticated ? (
+          <div className="flex flex-col gap-2 p-1">
+            <Link to="/login" onClick={() => setIsOpen(false)}>
+              <button className="w-full py-3 text-sm font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors">
+                Sign In
+              </button>
+            </Link>
+            <Link to="/register" onClick={() => setIsOpen(false)}>
+              <button className="w-full py-3.5 bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded-xl text-sm font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">
+                Get Started
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-1">
+            <Link 
+              to="/dashboard" 
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 p-3.5 text-base font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+            >
+              <LayoutDashboard size={20} className="text-slate-400" /> Dashboard
+            </Link>
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-3 p-3.5 text-base font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors text-left"
+            >
+              <LogOut size={20} /> Sign Out
+            </button>
+          </div>
         )}
-      </AnimatePresence>
+      </div>
+    </div>
+  </>
+)}
     </nav>
   );
 };

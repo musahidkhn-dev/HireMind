@@ -1,138 +1,143 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Star, TrendingUp, Brain } from 'lucide-react';
-import Button from '../common/Button';
-import heroDashboard from '../../assets/hero-dashboard.png';
+import { ChevronRight, Star, Brain, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
 
-const Hero = () => {
+const Hero = ({ isReady }) => {
   const navigate = useNavigate();
 
+  // 💎 Premium Luxury Easing
+  const premiumEase = [0.22, 1, 0.36, 1];
+
+  // Reveal Variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20, filter: 'blur(10px)' },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      filter: 'blur(0px)',
+      transition: { duration: 1.2, ease: premiumEase }
+    }
+  };
+
   return (
-    <section className="relative min-h-screen pt-32 pb-20 flex items-center bg-[#FDFCFB] dark:bg-[#0F0F0F] overflow-hidden">
-      {/* Subtle Background Decor */}
-      <div className="absolute inset-0 pointer-events-none opacity-30">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px]" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 w-full relative z-10">
-        {/* ✅ FIXED: Proper Grid Layout to prevent overlapping */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-16 lg:gap-24">
-          
-          {/* LEFT: TEXT CONTENT */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-start"
-          >
-            <div className="mb-6">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">
-                AI-Powered Recruitment
-              </span>
-            </div>
-
-            <h1 className="text-5xl md:text-7xl font-serif text-text-primary dark:text-white leading-[1.1] mb-6 tracking-tight">
-              Master the art of <br />
-              <span className="text-primary italic">hiring</span> with AI.
-            </h1>
-
-            <p className="text-lg text-text-secondary dark:text-gray-400 max-w-xl mb-10 leading-relaxed font-medium">
-              HireMind revolutionizes the recruitment lifecycle. Seamlessly screen resumes, rank talent, and build high-performance teams with our state-of-the-art AI dashboard.
-            </p>
-
-            <div className="flex flex-wrap gap-4 mb-12">
-              <Button size="xl" className="rounded-2xl px-10 shadow-xl shadow-primary/20" onClick={() => navigate('/jobs')}>
-                Explore Jobs
-              </Button>
-              <Button variant="outline" size="xl" className="rounded-2xl px-10" onClick={() => navigate('/register')}>
-                Hire Talent
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-10 pt-8 border-t border-gray-100 dark:border-white/5 w-full">
-              <div>
-                <p className="text-2xl font-black text-text-primary dark:text-white">98.5%</p>
-                <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-1">Accuracy</p>
-              </div>
-              <div>
-                <p className="text-2xl font-black text-text-primary dark:text-white">2.4k+</p>
-                <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-1">Partners</p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* RIGHT: IMAGE & VISUALS */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="hidden lg:flex justify-center relative"
-          >
-            {/* Background Decorative Blur */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/20 rounded-full blur-[120px] -z-10" />
-            
-            <div className="relative group">
-              {/* Main 3D Illustration */}
-              <motion.img 
-                src="/images/hero-3d.png" 
-                alt="3D Hiring Illustration" 
-                animate={{ y: [0, -15, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="w-full max-w-lg object-contain drop-shadow-[0_35px_60px_rgba(0,0,0,0.15)] group-hover:scale-105 transition-transform duration-700"
-              />
-
-              {/* Floating Cards (Premium Badges) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1, duration: 0.5 }}
-                className="absolute top-10 -left-10 bg-white dark:bg-[#1A1A1A] p-4 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/5 flex items-center gap-3 z-20"
-              >
-                <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
-                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                </div>
-                <span className="text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white">AI Match ✓</span>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-                className="absolute bottom-20 -right-10 bg-white dark:bg-[#1A1A1A] p-4 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/5 flex flex-col gap-1 z-20"
-              >
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Time Saved</span>
-                <span className="text-xl font-black text-primary">40% ⚡</span>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* SEARCH BAR (Safe distance below grid) */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-20 lg:mt-32 max-w-5xl mx-auto"
+    <motion.section 
+      initial="hidden"
+      animate={isReady ? "visible" : "hidden"}
+      variants={containerVariants}
+      className="relative min-h-[85vh] lg:min-h-screen pt-20 pb-12 sm:pt-28 sm:pb-20 flex flex-col items-center justify-center bg-[#F5F7FB] dark:bg-slate-900 overflow-hidden font-sans select-none"
+    >
+      
+      {/* 🏛️ Massive Background Typography */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center z-0">
+        <motion.h2 
+          animate={{ opacity: isReady ? 0.03 : 0.01 }}
+          transition={{ duration: 2 }}
+          className="text-[30vw] lg:text-[18vw] font-black text-indigo-950 dark:text-indigo-100 absolute tracking-tighter leading-none select-none opacity-[0.02]"
         >
-          <div className="bg-white/80 dark:bg-[#1A1A1A]/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white dark:border-white/5 p-3 flex flex-col md:flex-row items-center gap-2">
-            <div className="flex-1 flex items-center gap-4 px-6 py-4 w-full">
-              <Search className="text-primary" size={22} />
-              <input type="text" placeholder="Job titles or keywords" className="bg-transparent border-none outline-none text-text-primary dark:text-white w-full font-bold" />
-            </div>
-            <div className="hidden md:block w-px h-10 bg-border dark:bg-white/10" />
-            <div className="flex-1 flex items-center gap-4 px-6 py-4 w-full">
-              <MapPin className="text-primary" size={22} />
-              <input type="text" placeholder="Location" className="bg-transparent border-none outline-none text-text-primary dark:text-white w-full font-bold" />
-            </div>
-            <Button size="xl" className="w-full md:w-auto rounded-[1.8rem] px-12 py-6 font-black" onClick={() => navigate('/jobs')}>
-              Search
-            </Button>
-          </div>
-        </motion.div>
+          HIRE
+        </motion.h2>
       </div>
-    </section>
+
+      {/* 🌟 Ambient Background Orbs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.3, 0.4, 0.3],
+            x: [-15, 15, -15]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-5%] right-[-2%] w-[400px] sm:w-[800px] h-[400px] sm:h-[800px] rounded-full bg-gradient-to-b from-indigo-200/40 to-purple-100/40 blur-[80px] sm:blur-[150px] dark:from-indigo-900/10 dark:to-purple-900/10" 
+        />
+      </div>
+
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-10 lg:px-16 w-full relative z-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-20 items-center">
+          
+          {/* 🔥 LEFT: Editorial Content */}
+          <div className="w-full lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
+            <motion.div variants={itemVariants} className="mb-4 lg:mb-6 inline-flex items-center gap-3 px-3.5 lg:px-5 py-1 lg:py-2 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-indigo-100 dark:border-slate-700">
+              <Sparkles size={10} className="text-indigo-500" />
+              <span className="text-[8px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">The Intelligence Layer</span>
+            </motion.div>
+
+            <motion.h1 variants={itemVariants} className="text-[clamp(2.5rem,7.5vw,5.5rem)] font-serif font-medium text-slate-950 dark:text-white leading-[0.98] tracking-tighter mb-4 lg:mb-6">
+              Hire <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600 italic">Smarter.</span><br />
+              Build Faster.
+            </motion.h1>
+
+            <motion.p variants={itemVariants} className="text-base lg:text-xl text-slate-600 dark:text-slate-400 max-w-xl mb-8 lg:mb-10 leading-snug font-medium tracking-tight">
+              Elevate your recruiting pipeline with AI-driven insights and verified talent sourcing.
+            </motion.p>
+
+            <motion.div variants={itemVariants} className="flex flex-row items-center justify-center lg:justify-start gap-3 lg:gap-4 w-full sm:w-auto">
+              <button onClick={() => navigate('/jobs')} className="flex-1 sm:flex-none px-6 lg:px-10 py-3.5 lg:py-4.5 bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded-[1rem] lg:rounded-[1.2rem] text-sm lg:text-base font-bold transition-all hover:shadow-2xl hover:-translate-y-1 active:scale-95 shadow-xl shadow-slate-950/10">
+                Explore Jobs
+              </button>
+              <button onClick={() => navigate('/register')} className="flex-1 sm:flex-none px-6 lg:px-10 py-3.5 lg:py-4.5 bg-white/40 dark:bg-slate-800/40 backdrop-blur-2xl text-slate-950 dark:text-white border-2 border-slate-200 dark:border-slate-700 rounded-[1rem] lg:rounded-[1.2rem] text-sm lg:text-base font-bold transition-all hover:bg-white dark:hover:bg-slate-700">
+                Hire Talent
+              </button>
+            </motion.div>
+          </div>
+
+          {/* 🧥 RIGHT: Recruiter Composition */}
+          <div className="w-full lg:col-span-5 relative mt-4 lg:mt-0">
+            <div className="relative max-w-[280px] sm:max-w-[320px] lg:max-w-none mx-auto">
+              <motion.div 
+                initial={{ opacity: 0, y: 40 }}
+                animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                transition={{ duration: 1.5, ease: premiumEase, delay: 0.4 }}
+                className="relative rounded-[2rem] lg:rounded-[3.5rem] overflow-hidden border-[4px] lg:border-[10px] border-white dark:border-slate-800 shadow-2xl aspect-[5/6]"
+              >
+                 <img src="/images/hero-recruiter-premium.png" alt="Elite Recruiter" className="w-full h-full object-cover" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent" />
+              </motion.div>
+
+              {/* 💎 Floating AI Cards (Pinned to Image) */}
+              <motion.div 
+                initial={{ opacity: 0, x: -30 }}
+                animate={isReady ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                transition={{ delay: 0.8, duration: 1, ease: premiumEase }}
+                className="absolute -top-3 lg:-top-8 -left-4 lg:-left-12 bg-white/95 dark:bg-slate-800/95 backdrop-blur-3xl p-2.5 lg:p-5 rounded-[1rem] lg:rounded-[2rem] shadow-xl flex items-center gap-2.5 lg:gap-4 w-[160px] lg:w-[280px] z-20"
+              >
+                <div className="w-7 h-7 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-indigo-600 flex items-center justify-center text-white text-[8px] lg:text-sm font-black">JS</div>
+                <div className="flex-1 overflow-hidden">
+                  <p className="text-[9px] lg:text-sm font-black text-slate-900 dark:text-white truncate">John Smith</p>
+                  <p className="text-[6px] lg:text-[9px] font-bold text-slate-400 uppercase tracking-widest">Match: 99.8%</p>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0, x: 30 }}
+                animate={isReady ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
+                transition={{ delay: 1, duration: 1, ease: premiumEase }}
+                className="absolute bottom-8 lg:bottom-16 -right-4 lg:-right-12 bg-slate-950/95 dark:bg-slate-900/95 backdrop-blur-3xl p-3 lg:p-6 rounded-[1.2rem] lg:rounded-[2.5rem] shadow-2xl w-[150px] lg:w-[260px] z-20"
+              >
+                <div className="flex items-center gap-2 lg:gap-3 text-white mb-2 lg:mb-4">
+                  <Brain size={10} className="text-indigo-400" />
+                  <span className="text-[7px] lg:text-[10px] font-black uppercase tracking-widest">AI Fit Analysis</span>
+                </div>
+                <div className="h-0.5 lg:h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <motion.div initial={{ width: 0 }} animate={isReady ? { width: '99%' } : { width: 0 }} transition={{ duration: 2, delay: 1.2 }} className="h-full bg-indigo-500" />
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.section>
   );
 };
 

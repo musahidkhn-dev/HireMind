@@ -22,32 +22,33 @@ const KanbanCard = ({ application, index, onClick }) => {
           style={{
             ...provided.draggableProps.style,
           }}
-          className={`group bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md hover:border-amber-200 dark:hover:border-amber-900 transition-all cursor-grab active:cursor-grabbing select-none ${
-            snapshot.isDragging ? 'rotate-2 shadow-xl ring-2 ring-amber-500 scale-105 z-50' : ''
+          className={`group bg-white dark:bg-slate-800 p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-sm border border-border dark:border-slate-700 hover:shadow-md hover:border-primary/30 dark:hover:border-primary/50 transition-all cursor-grab active:cursor-grabbing select-none ${
+            snapshot.isDragging ? 'rotate-2 shadow-xl ring-2 ring-primary scale-105 z-50' : ''
           }`}
         >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <Avatar name={candidate?.name} src={candidate?.userImage} size="sm" className="rounded-lg" />
+          <div className="flex items-start justify-between gap-2 lg:gap-3">
+            <div className="flex items-center gap-2 lg:gap-3">
+              <Avatar name={candidate?.name} src={candidate?.userImage} size="xs" className="rounded-lg lg:hidden" />
+              <Avatar name={candidate?.name} src={candidate?.userImage} size="sm" className="rounded-lg hidden lg:block" />
               <div>
-                <h4 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-1">
+                <h4 className="text-xs lg:text-sm font-bold text-text-primary dark:text-white line-clamp-1">
                   {candidate?.name}
                 </h4>
-                <p className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase truncate">
+                <p className="text-[9px] lg:text-[10px] font-semibold text-text-secondary dark:text-gray-400 uppercase truncate">
                   {job?.title}
                 </p>
               </div>
             </div>
-            <GripVertical size={16} className="text-gray-300 group-hover:text-gray-500 shrink-0" />
+            <GripVertical size={14} className="lg:w-4 lg:h-4 text-border dark:text-slate-600 group-hover:text-text-secondary shrink-0" />
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase">
-              <Calendar size={12} />
+          <div className="mt-3 lg:mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-1 lg:gap-1.5 text-[9px] lg:text-[10px] font-bold text-text-secondary dark:text-gray-500 uppercase">
+              <Calendar size={10} className="lg:w-3 lg:h-3" />
               {timeAgo(createdAt)}
             </div>
             {scoreValue !== undefined && scoreValue !== null && (
-              <Badge variant={scoreColor} size="sm" className="flex items-center gap-1 font-black">
+              <Badge variant={scoreColor} size="sm" className="flex items-center gap-1 font-black text-[9px] lg:text-[10px] h-5 lg:h-6 px-1.5 lg:px-2">
                 <Brain size={10} /> {scoreValue}%
               </Badge>
             )}

@@ -14,8 +14,9 @@ const variants = {
 };
 
 const sizes = {
-  sm: 'px-2 py-0.5 text-xs',
-  md: 'px-3 py-1 text-sm',
+  xs: 'px-1.5 py-0.5 text-[8px]',
+  sm: 'px-2 py-0.5 text-[10px]',
+  md: 'px-3 py-1 text-xs',
 };
 
 const Badge = ({

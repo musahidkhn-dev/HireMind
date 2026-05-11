@@ -10,11 +10,11 @@ const CreateJob = () => {
   const createJob = useCreateJob();
 
   const onSubmit = async (data) => {
-    console.log("🚀 CreateJob onSubmit called with:", data);
+
     try {
-      console.log("⏳ Starting mutation...");
+
       await createJob.mutateAsync(data);
-      console.log("✨ Mutation successful, navigating...");
+
       navigate('/dashboard/company/jobs');
     } catch (err) {
       console.error("❌ Mutation failed:", err);

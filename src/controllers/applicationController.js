@@ -38,10 +38,6 @@ export const applyJob = async (req, res) => {
             return res.status(400).json({ message: 'This job is not accepting applications' });
         }
 
-
-        console.log("DEBUG: applyJob - jobId:", jobId);
-        console.log("DEBUG: applyJob - userId:", req.user?._id);
-
         // Check duplicate application
         const existing = await Application.findOne({
             job: new mongoose.Types.ObjectId(jobId),
@@ -49,7 +45,6 @@ export const applyJob = async (req, res) => {
         });
 
         if(existing) {
-            console.log("DEBUG: Duplicate application found in database");
             return res.status(400).json({ success: false, message: 'You have already applied to this job' });
         }
 
@@ -289,7 +284,6 @@ export const getSingleApplication = async (req, res) => {
 export const updateApplicationStage = async (req, res) => {
     try {
         const { stage, note } = req.body;
-        console.log(`Updating application ${req.params.id} stage to: ${stage}`);
 
         if(!stage) {
             return res.status(400).json({ message: 'Stage is required' });
@@ -308,7 +302,6 @@ export const updateApplicationStage = async (req, res) => {
         }
 
         const trimmedStage = stage.trim();
-        console.log(`Updating application ${req.params.id} stage to: ${trimmedStage}`);
 
         // Validation stage exists in job pipeline
         const validStages = application.job.pipelineStages;
@@ -361,7 +354,6 @@ export const updateApplicationStage = async (req, res) => {
                         role: 'employee',
                         company: application.company,
                     });
-                    console.log(`[HIRE_LOG] Candidate ${application.candidate} converted to employee in background.`);
                 }
 
                 // Populate extra details needed for notifications
@@ -523,7 +515,6 @@ export const getStats = async (req, res) => {
             }
         });
 
-        console.log("Aggregated Stats:", formatted);
         res.json(formatted);
     } catch (error) {
         console.error('getStats Error:', error.message);

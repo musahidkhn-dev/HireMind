@@ -34,10 +34,8 @@ const Button = ({
   ...rest
 }) => {
   return (
-    <motion.button
+    <button
       type={type}
-      whileHover={!disabled && !loading ? { scale: 1.04 } : {}}
-      whileTap={!disabled && !loading ? { scale: 0.98 } : {}}
       onClick={onClick}
       disabled={disabled || loading}
       className={twMerge(
@@ -54,7 +52,7 @@ const Button = ({
         <Icon className={clsx('w-5 h-5', children && 'mr-2')} />
       ) : null}
       {children}
-    </motion.button>
+    </button>
   );
 };
 

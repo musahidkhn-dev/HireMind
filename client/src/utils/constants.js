@@ -39,3 +39,6 @@ export const COMPANY_SIZES = [
   '201-500',
   '500+',
 ];
+
+export const PREMIUM_EASE = [0.22, 1, 0.36, 1];
+

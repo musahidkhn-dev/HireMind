@@ -15,8 +15,7 @@ export const applicationApi = {
   withdrawApplication: (id) => API.delete(`/applications/${id}`),
   // Fix: Backend endpoint is /note
   addNote: (id, text) => API.post(`/applications/${id}/note`, { text }),
-  // FIXED: Removed non-existent /applications/stats endpoint (use dashboardApi instead)
-  // getStats: () => API.get('/applications/stats'),
+  getStats: () => API.get('/applications/stats'),
 };
 
 export default applicationApi;
