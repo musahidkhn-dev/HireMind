@@ -101,7 +101,7 @@ const Sidebar = ({ collapsed, onToggle, isMobileOpen, onCloseMobile }) => {
       >
         <Link to="/" className="h-16 lg:h-20 flex items-center px-6 lg:px-8 gap-3 cursor-pointer group" onClick={handleLinkClick}>
           <div className="p-1.5 lg:p-2 bg-primary rounded-xl lg:rounded-2xl shrink-0 group-hover:rotate-12 transition-transform shadow-lg shadow-primary/20">
-            <Brain className="text-white" size={20} className="lg:w-6 lg:h-6" />
+            <Brain className="text-white lg:w-6 lg:h-6" size={20} />
           </div>
           {(!collapsed || isMobileOpen) && (
             <span className="text-xl lg:text-2xl font-serif text-text-primary dark:text-white whitespace-nowrap">

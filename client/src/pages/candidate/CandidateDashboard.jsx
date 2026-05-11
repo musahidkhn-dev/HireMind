@@ -60,7 +60,9 @@ const CandidateDashboard = () => {
   const completionPercentage = Math.round((completedFields.length / profileFields.length) * 100);
   const missingFields = profileFields.filter(f => !getFieldValue(f.key));
 
-    <div className="w-full max-w-7xl mx-auto space-y-8 lg:space-y-12">
+  return (
+    <PageTransition>
+      <div className="w-full max-w-7xl mx-auto space-y-8 lg:space-y-12">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-8">
           <div>
@@ -260,7 +262,8 @@ const CandidateDashboard = () => {
           </div>
         </div>
       </div>
-    );
+    </PageTransition>
+  );
 };
 
 export default CandidateDashboard;

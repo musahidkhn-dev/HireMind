@@ -55,7 +55,7 @@ const Footer = () => {
           <div className="lg:max-w-sm">
             <Link to="/" className="flex items-center gap-2 mb-4 lg:mb-6">
               <div className="p-1.5 lg:p-2 bg-primary-500 rounded-lg">
-                <Brain className="text-white" size={18} className="lg:hidden" />
+                <Brain className="text-white lg:hidden" size={18} />
                 <Brain className="text-white hidden lg:block" size={24} />
               </div>
               <span className="text-lg lg:text-xl font-black tracking-tight text-gray-900 dark:text-white">
